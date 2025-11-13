@@ -23,7 +23,7 @@ struct UsersListView: View {
                 }
                 .onDelete(perform: deleteUsers)
             }
-            .navigationTitle("Usuarios")
+            .navigationTitle("Miembros")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingAddUser = true }) {
@@ -37,9 +37,9 @@ struct UsersListView: View {
             .overlay {
                 if users.isEmpty {
                     ContentUnavailableView(
-                        "No hay usuarios",
+                        "No hay miembros",
                         systemImage: "person.2.fill",
-                        description: Text("Toca + para crear el primer usuario")
+                        description: Text("Toca + para crear el primer miembro")
                     )
                 }
             }
@@ -72,17 +72,39 @@ struct AddUserView: View {
     @Environment(\.modelContext) private var modelContext
     @Binding var isPresented: Bool
     @State private var name = ""
+    @State private var birthday: Date?
+    @State private var hasBirthday = false
+    @State private var selectedBirthday = Date()
+    @State private var hasSede = false
+    @State private var address = ""
     @FocusState private var isNameFocused: Bool
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Nombre del Usuario") {
+                Section("Nombre del Miembro") {
                     TextField("Nombre", text: $name)
                         .focused($isNameFocused)
                 }
+
+                Section("Fecha de Cumpleaños (Opcional)") {
+                    Toggle("Agregar cumpleaños", isOn: $hasBirthday)
+
+                    if hasBirthday {
+                        DatePicker("Fecha", selection: $selectedBirthday, displayedComponents: .date)
+                    }
+                }
+
+                Section("Sede") {
+                    Toggle("¿Tiene sede?", isOn: $hasSede)
+
+                    if hasSede {
+                        TextField("Dirección", text: $address, axis: .vertical)
+                            .lineLimit(2...4)
+                    }
+                }
             }
-            .navigationTitle("Nuevo Usuario")
+            .navigationTitle("Nuevo Miembro")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -107,7 +129,10 @@ struct AddUserView: View {
         let trimmedName = name.trimmingCharacters(in: .whitespaces)
         guard !trimmedName.isEmpty else { return }
 
-        let newUser = User(name: trimmedName)
+        let finalBirthday = hasBirthday ? selectedBirthday : nil
+        let finalAddress = hasSede ? address : ""
+
+        let newUser = User(name: trimmedName, birthday: finalBirthday, hasSede: hasSede, address: finalAddress)
         modelContext.insert(newUser)
         isPresented = false
     }

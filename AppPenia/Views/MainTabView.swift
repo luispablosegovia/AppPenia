@@ -13,12 +13,12 @@ struct MainTabView: View {
         TabView {
             EventsListView()
                 .tabItem {
-                    Label("Eventos", systemImage: "calendar")
+                    Label("Juntadas", systemImage: "calendar")
                 }
 
             UsersListView()
                 .tabItem {
-                    Label("Usuarios", systemImage: "person.2")
+                    Label("Miembros", systemImage: "person.2")
                 }
         }
     }

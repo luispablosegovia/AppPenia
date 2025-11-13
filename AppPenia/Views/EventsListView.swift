@@ -25,7 +25,7 @@ struct EventsListView: View {
                 }
                 .onDelete(perform: deleteEvents)
             }
-            .navigationTitle("Eventos")
+            .navigationTitle("Peña de los Miércoles")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingAddEvent = true }) {
@@ -39,9 +39,9 @@ struct EventsListView: View {
             .overlay {
                 if events.isEmpty {
                     ContentUnavailableView(
-                        "No hay eventos",
+                        "No hay juntadas",
                         systemImage: "calendar.badge.plus",
-                        description: Text("Toca + para crear el primer evento")
+                        description: Text("Toca + para crear la primera juntada")
                     )
                 }
             }
@@ -65,6 +65,11 @@ struct EventRow: View {
             Text("\(event.attendeeCount) asistentes")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+            if let host = event.host {
+                Text("🏠 Sede: \(host.name)")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
             if !event.notes.isEmpty {
                 Text(event.notes)
                     .font(.caption)
@@ -78,15 +83,72 @@ struct EventRow: View {
 
 struct AddEventView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query(sort: \User.name) private var allUsers: [User]
     @Binding var isPresented: Bool
     @State private var selectedDate = Date()
     @State private var notes = ""
+    @State private var selectedHostId: UUID?
+    @State private var selectedCookId: UUID?
+    @State private var selectedDishwasherId: UUID?
+
+    private var usersWithSede: [User] {
+        allUsers.filter { $0.hasSede }
+    }
+
+    private var canSave: Bool {
+        selectedHostId != nil && selectedCookId != nil && selectedDishwasherId != nil
+    }
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Fecha del Evento") {
+                Section("Fecha de la Juntada") {
                     DatePicker("Fecha", selection: $selectedDate, displayedComponents: .date)
+                }
+
+                Section("Sede") {
+                    if usersWithSede.isEmpty {
+                        Text("No hay miembros con sede registrada")
+                            .foregroundColor(.secondary)
+                            .italic()
+                    } else {
+                        Picker("Seleccionar sede", selection: $selectedHostId) {
+                            Text("Seleccionar...").tag(nil as UUID?)
+                            ForEach(usersWithSede) { user in
+                                Text(user.name).tag(user.id as UUID?)
+                            }
+                        }
+                    }
+                }
+
+                Section("Quién cocina") {
+                    if allUsers.isEmpty {
+                        Text("No hay miembros registrados")
+                            .foregroundColor(.secondary)
+                            .italic()
+                    } else {
+                        Picker("Seleccionar cocinero", selection: $selectedCookId) {
+                            Text("Seleccionar...").tag(nil as UUID?)
+                            ForEach(allUsers) { user in
+                                Text(user.name).tag(user.id as UUID?)
+                            }
+                        }
+                    }
+                }
+
+                Section("Quién lava") {
+                    if allUsers.isEmpty {
+                        Text("No hay miembros registrados")
+                            .foregroundColor(.secondary)
+                            .italic()
+                    } else {
+                        Picker("Seleccionar lavador", selection: $selectedDishwasherId) {
+                            Text("Seleccionar...").tag(nil as UUID?)
+                            ForEach(allUsers) { user in
+                                Text(user.name).tag(user.id as UUID?)
+                            }
+                        }
+                    }
                 }
 
                 Section("Notas (Opcional)") {
@@ -94,7 +156,7 @@ struct AddEventView: View {
                         .lineLimit(3...6)
                 }
             }
-            .navigationTitle("Nuevo Evento")
+            .navigationTitle("Nueva Juntada")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -106,13 +168,22 @@ struct AddEventView: View {
                     Button("Guardar") {
                         saveEvent()
                     }
+                    .disabled(!canSave)
                 }
             }
         }
     }
 
     private func saveEvent() {
-        let newEvent = Event(date: selectedDate, notes: notes)
+        guard let hostId = selectedHostId,
+              let cookId = selectedCookId,
+              let dishwasherId = selectedDishwasherId else { return }
+
+        guard let host = allUsers.first(where: { $0.id == hostId }),
+              let cook = allUsers.first(where: { $0.id == cookId }),
+              let dishwasher = allUsers.first(where: { $0.id == dishwasherId }) else { return }
+
+        let newEvent = Event(date: selectedDate, notes: notes, host: host, cook: cook, dishwasher: dishwasher)
         modelContext.insert(newEvent)
         isPresented = false
     }

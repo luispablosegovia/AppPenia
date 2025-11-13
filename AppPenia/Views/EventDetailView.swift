@@ -28,7 +28,7 @@ struct EventDetailView: View {
 
     var body: some View {
         List {
-            Section("Información del Evento") {
+            Section("Información de la Juntada") {
                 HStack {
                     Text("Fecha")
                     Spacer()
@@ -41,6 +41,38 @@ struct EventDetailView: View {
                         Text("Notas")
                             .font(.subheadline)
                         Text(event.notes)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                if let host = event.host {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Sede")
+                            .font(.subheadline)
+                        Text(host.name)
+                            .foregroundColor(.secondary)
+                        if let address = event.hostAddress {
+                            Text(address)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+
+                if let cook = event.cook {
+                    HStack {
+                        Text("Cocina")
+                        Spacer()
+                        Text(cook.name)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                if let dishwasher = event.dishwasher {
+                    HStack {
+                        Text("Lava")
+                        Spacer()
+                        Text(dishwasher.name)
                             .foregroundColor(.secondary)
                     }
                 }
@@ -69,7 +101,7 @@ struct EventDetailView: View {
                 }
             }
         }
-        .navigationTitle("Detalle del Evento")
+        .navigationTitle("Detalle de la Juntada")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -147,9 +179,9 @@ struct AddAttendeeView: View {
             .overlay {
                 if availableUsers.isEmpty {
                     ContentUnavailableView(
-                        "No hay usuarios disponibles",
+                        "No hay miembros disponibles",
                         systemImage: "person.2.slash",
-                        description: Text("Todos los usuarios ya están registrados en este evento")
+                        description: Text("Todos los miembros ya están registrados en esta juntada")
                     )
                 }
             }
@@ -169,7 +201,7 @@ struct AddAttendeeView: View {
 
 #Preview {
     NavigationStack {
-        EventDetailView(event: Event(date: Date(), notes: "Evento de prueba"))
+        EventDetailView(event: Event(date: Date(), notes: "Juntada de prueba"))
     }
     .modelContainer(for: [Event.self, User.self, Attendance.self])
 }

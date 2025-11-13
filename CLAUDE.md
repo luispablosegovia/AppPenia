@@ -4,15 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-AppPenia is a SwiftUI-based iOS application for managing weekly event attendance. Built with Xcode 26.0.1, targeting iOS 26.0. The project uses Swift 5.0 with modern concurrency features and SwiftData for persistence.
+AppPenia is a SwiftUI-based iOS application for managing weekly gathering attendance ("juntadas"). Built with Xcode 26.0.1, targeting iOS 26.0. The project uses Swift 5.0 with modern concurrency features and SwiftData for persistence.
 
 ## Purpose
 
-The app manages attendance tracking for weekly events (occurring every Wednesday), allowing:
-- Registration of users and events
-- Tracking which users attended which events
-- Viewing attendance history per user
-- Viewing attendee lists per event
+The app manages attendance tracking for weekly gatherings (occurring every Wednesday), allowing:
+- Registration of members and gatherings
+- Tracking which members attended which gatherings
+- Viewing attendance history per member
+- Viewing attendee lists per gathering
 - Total attendance counts
 
 ## Architecture
@@ -28,32 +28,40 @@ AppPenia/
 │   ├── User.swift           - User entity with name, attendances relationship
 │   └── Attendance.swift     - Join entity connecting Users and Events
 ├── Views/
-│   ├── MainTabView.swift    - Tab-based navigation (Events/Users)
-│   ├── EventsListView.swift - Events list with add/delete functionality
-│   ├── EventDetailView.swift - Event detail with attendance management
-│   ├── UsersListView.swift  - Users list with add/delete functionality
-│   └── UserProfileView.swift - User profile with attendance history
+│   ├── MainTabView.swift    - Tab-based navigation (Juntadas/Miembros)
+│   ├── EventsListView.swift - Gatherings list with add/delete functionality
+│   ├── EventDetailView.swift - Gathering detail with attendance management
+│   ├── UsersListView.swift  - Members list with add/delete functionality
+│   └── UserProfileView.swift - Member profile with attendance history
 ├── AppPeniaApp.swift        - App entry point with SwiftData configuration
 └── ContentView.swift        - Wrapper redirecting to MainTabView
 ```
 
 ### Data Models (SwiftData)
 
-**Event**: Events with date and optional notes
+**Event**: Gatherings (juntadas) with date, optional notes, and role assignments
 - `@Attribute(.unique) var id: UUID`
-- `var date: Date` - Event date
-- `var notes: String` - Optional event notes
+- `var date: Date` - Gathering date
+- `var notes: String` - Optional gathering notes
+- `var host: User?` - Member who provides the sede (headquarters)
+- `var cook: User?` - Member who cooks
+- `var dishwasher: User?` - Member who washes/cleans
 - `@Relationship(deleteRule: .cascade)` with Attendance
+- Computed properties: `attendeeCount`, `formattedDate`, `hostAddress`
 
-**User**: Registered users
+**User**: Registered members (miembros)
 - `@Attribute(.unique) var id: UUID`
-- `var name: String` - User's name
+- `var name: String` - Member's name
 - `var createdAt: Date` - Registration date
+- `var birthday: Date?` - Optional birthday
+- `var hasSede: Bool` - Whether the member has a sede (headquarters)
+- `var address: String` - Sede address (empty if no sede)
 - `@Relationship(deleteRule: .cascade)` with Attendance
+- Computed properties: `attendanceCount`, `age`, `formattedBirthday`
 
 **Attendance**: Many-to-many relationship between Users and Events
-- Links a User to an Event
-- Cascade deletion when User or Event is deleted
+- Links a Member to a Gathering
+- Cascade deletion when Member or Gathering is deleted
 
 ### Tech Stack
 
@@ -97,28 +105,35 @@ iOS 26.0
 
 ## Key Features Implemented
 
-### Events Management
-- List view with events sorted by date (most recent first)
-- Create new events with date picker and optional notes
-- View event details with attendee list
-- Add multiple attendees to an event via multi-select interface
-- Delete attendees from events (swipe to delete)
-- Delete entire events (swipe to delete in list)
+### Gatherings Management (Juntadas)
+- List view with gatherings sorted by date (most recent first)
+- Create new gatherings with date picker, optional notes, and role assignments
+- Required role assignments: sede (host), cook, and dishwasher
+- Host selection limited to members with sede registered
+- View gathering details with full information (date, sede with address, cook, dishwasher, attendee list)
+- List rows display host information with house emoji
+- Add multiple attendees to a gathering via multi-select interface
+- Delete attendees from gatherings (swipe to delete)
+- Delete entire gatherings (swipe to delete in list)
 
-### Users Management
-- List view with users sorted alphabetically
-- Create new users with name validation
-- View user profile with attendance statistics
-- See complete attendance history per user (sorted by date)
-- Delete users (swipe to delete)
+### Members Management (Miembros)
+- List view with members sorted alphabetically
+- Create new members with name validation
+- Optional birthday field with age calculation
+- Optional sede (headquarters) information with address
+- View member profile with full information (birthday, age, sede, address)
+- Statistics section showing: times hosted, times cooked, times washed
+- Attendance statistics showing total count
+- See complete attendance history per member (sorted by date)
+- Delete members (swipe to delete)
 
 ### Data Relationships
-- Many-to-many relationship between Users and Events via Attendance entity
-- Cascade deletion: removing a User or Event automatically removes related Attendance records
-- Bidirectional navigation: tap on a user in event detail to see their profile, tap on an event in user profile to see event details
+- Many-to-many relationship between Members and Gatherings via Attendance entity
+- Cascade deletion: removing a Member or Gathering automatically removes related Attendance records
+- Bidirectional navigation: tap on a member in gathering detail to see their profile, tap on a gathering in member profile to see gathering details
 
 ### UI Features
-- Tab-based navigation (Events / Users)
+- Tab-based navigation (Juntadas / Miembros)
 - Modal sheets for creating new records
 - NavigationStack for hierarchical navigation
 - ContentUnavailableView for empty states

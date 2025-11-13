@@ -9,11 +9,24 @@ import SwiftUI
 import SwiftData
 
 struct UserProfileView: View {
+    @Query private var allEvents: [Event]
     let user: User
 
     private var sortedAttendances: [Attendance] {
         (user.attendances ?? [])
             .sorted { ($0.event?.date ?? Date()) > ($1.event?.date ?? Date()) }
+    }
+
+    private var timesHosted: Int {
+        allEvents.filter { $0.host?.id == user.id }.count
+    }
+
+    private var timesCooked: Int {
+        allEvents.filter { $0.cook?.id == user.id }.count
+    }
+
+    private var timesWashed: Int {
+        allEvents.filter { $0.dishwasher?.id == user.id }.count
     }
 
     var body: some View {
@@ -26,12 +39,22 @@ struct UserProfileView: View {
                         .foregroundColor(.secondary)
                 }
 
-                HStack {
-                    Text("Total Asistencias")
-                    Spacer()
-                    Text("\(user.attendanceCount)")
-                        .foregroundColor(.secondary)
-                        .bold()
+                if let formattedBirthday = user.formattedBirthday {
+                    HStack {
+                        Text("Cumpleaños")
+                        Spacer()
+                        Text(formattedBirthday)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                if let age = user.age {
+                    HStack {
+                        Text("Edad")
+                        Spacer()
+                        Text("\(age) años")
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 HStack {
@@ -39,6 +62,56 @@ struct UserProfileView: View {
                     Spacer()
                     Text(user.createdAt.formatted(date: .abbreviated, time: .omitted))
                         .foregroundColor(.secondary)
+                }
+
+                HStack {
+                    Text("Tiene sede")
+                    Spacer()
+                    Text(user.hasSede ? "Sí" : "No")
+                        .foregroundColor(.secondary)
+                }
+
+                if user.hasSede && !user.address.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Dirección")
+                            .font(.subheadline)
+                        Text(user.address)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                HStack {
+                    Text("Total Asistencias")
+                    Spacer()
+                    Text("\(user.attendanceCount)")
+                        .foregroundColor(.secondary)
+                        .bold()
+                }
+            }
+
+            Section("Estadísticas") {
+                HStack {
+                    Text("Veces que prestó sede")
+                    Spacer()
+                    Text("\(timesHosted)")
+                        .foregroundColor(.secondary)
+                        .bold()
+                }
+
+                HStack {
+                    Text("Veces que cocinó")
+                    Spacer()
+                    Text("\(timesCooked)")
+                        .foregroundColor(.secondary)
+                        .bold()
+                }
+
+                HStack {
+                    Text("Veces que lavó")
+                    Spacer()
+                    Text("\(timesWashed)")
+                        .foregroundColor(.secondary)
+                        .bold()
                 }
             }
 
