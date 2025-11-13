@@ -46,32 +46,39 @@ struct EventDetailView: View {
                 }
 
                 if let host = event.host {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Sede")
                             .font(.subheadline)
-                        Text(host.name)
-                            .foregroundColor(.secondary)
-                        if let address = event.hostAddress {
-                            Text(address)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                        HStack(spacing: 12) {
+                            ProfilePhotoView(photoData: host.photoData, size: .small)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(host.name)
+                                    .foregroundColor(.secondary)
+                                if let address = event.hostAddress {
+                                    Text(address)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
                         }
                     }
                 }
 
                 if let cook = event.cook {
-                    HStack {
+                    HStack(spacing: 12) {
                         Text("Cocina")
                         Spacer()
+                        ProfilePhotoView(photoData: cook.photoData, size: .small)
                         Text(cook.name)
                             .foregroundColor(.secondary)
                     }
                 }
 
                 if let dishwasher = event.dishwasher {
-                    HStack {
+                    HStack(spacing: 12) {
                         Text("Lava")
                         Spacer()
+                        ProfilePhotoView(photoData: dishwasher.photoData, size: .small)
                         Text(dishwasher.name)
                             .foregroundColor(.secondary)
                     }
@@ -96,7 +103,10 @@ struct EventDetailView: View {
                 } else {
                     ForEach(attendees) { user in
                         NavigationLink(destination: UserProfileView(user: user)) {
-                            Text(user.name)
+                            HStack(spacing: 12) {
+                                ProfilePhotoView(photoData: user.photoData, size: .small)
+                                Text(user.name)
+                            }
                         }
                     }
                     .onDelete(perform: deleteAttendance)
@@ -158,7 +168,8 @@ struct AddAttendeeView: View {
                         selectedUsers.insert(user.id)
                     }
                 }) {
-                    HStack {
+                    HStack(spacing: 12) {
+                        ProfilePhotoView(photoData: user.photoData, size: .small)
                         Text(user.name)
                             .foregroundColor(.primary)
                         Spacer()

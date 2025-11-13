@@ -88,12 +88,16 @@ struct UserRow: View {
     let user: User
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(user.name)
-                .font(.headline)
-            Text("\(user.attendanceCount) asistencias")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
+        HStack(spacing: 12) {
+            ProfilePhotoView(photoData: user.photoData, size: .small)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(user.name)
+                    .font(.headline)
+                Text("\(user.attendanceCount) asistencias")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
         }
         .padding(.vertical, 4)
     }
@@ -211,48 +215,6 @@ struct AddUserView: View {
         let newUser = User(name: trimmedName, birthday: finalBirthday, hasSede: hasSede, address: finalAddress, photoData: photoData)
         modelContext.insert(newUser)
         isPresented = false
-    }
-}
-
-// MARK: - Camera View
-
-struct CameraView: UIViewControllerRepresentable {
-    @Environment(\.dismiss) private var dismiss
-    @Binding var image: UIImage?
-
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        picker.sourceType = .camera
-        picker.allowsEditing = true
-        return picker
-    }
-
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-        let parent: CameraView
-
-        init(_ parent: CameraView) {
-            self.parent = parent
-        }
-
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let editedImage = info[.editedImage] as? UIImage {
-                parent.image = editedImage
-            } else if let originalImage = info[.originalImage] as? UIImage {
-                parent.image = originalImage
-            }
-            parent.dismiss()
-        }
-
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            parent.dismiss()
-        }
     }
 }
 

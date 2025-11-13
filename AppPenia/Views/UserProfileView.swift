@@ -11,6 +11,7 @@ import SwiftData
 struct UserProfileView: View {
     @Query private var allEvents: [Event]
     let user: User
+    @State private var showingEditPhoto = false
 
     private var sortedAttendances: [Attendance] {
         (user.attendances ?? [])
@@ -31,6 +32,23 @@ struct UserProfileView: View {
 
     var body: some View {
         List {
+            Section {
+                VStack(spacing: 16) {
+                    ProfilePhotoView(photoData: user.photoData, size: .large)
+
+                    Button(action: { showingEditPhoto = true }) {
+                        Label("Cambiar Foto", systemImage: "camera")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                    }
+                    .buttonStyle(GlassButtonStyle())
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+            }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+
             Section {
                 HStack {
                     Text("Nombre")
@@ -150,6 +168,9 @@ struct UserProfileView: View {
         .glassListBackground()
         .navigationTitle(user.name)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showingEditPhoto) {
+            EditPhotoView(user: user, isPresented: $showingEditPhoto)
+        }
     }
 }
 
