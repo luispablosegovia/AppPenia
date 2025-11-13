@@ -25,14 +25,22 @@ The app manages attendance tracking for weekly gatherings (occurring every Wedne
 AppPenia/
 ├── Models/
 │   ├── Event.swift          - Event entity with date, notes, attendances relationship
-│   ├── User.swift           - User entity with name, attendances relationship
+│   ├── User.swift           - User entity with name, photo, attendances relationship
 │   └── Attendance.swift     - Join entity connecting Users and Events
 ├── Views/
-│   ├── MainTabView.swift    - Tab-based navigation (Juntadas/Miembros)
+│   ├── MainTabView.swift    - Tab-based navigation (Juntadas/Miembros/Estadísticas)
 │   ├── EventsListView.swift - Gatherings list with add/delete functionality
 │   ├── EventDetailView.swift - Gathering detail with attendance management
+│   ├── EditEventView.swift  - Edit existing gathering information
 │   ├── UsersListView.swift  - Members list with add/delete functionality
-│   └── UserProfileView.swift - Member profile with attendance history
+│   ├── UserProfileView.swift - Member profile with attendance history
+│   ├── EditUserView.swift   - Edit existing member information
+│   ├── EditPhotoView.swift  - Edit/delete member photos
+│   └── StatisticsView.swift - Overall statistics and insights
+├── Components/
+│   ├── GlassComponents.swift - Reusable glassmorphism UI components
+│   ├── ProfilePhotoView.swift - Reusable avatar component with multiple sizes
+│   └── CameraView.swift     - UIImagePickerController wrapper for camera access
 ├── AppPeniaApp.swift        - App entry point with SwiftData configuration
 └── ContentView.swift        - Wrapper redirecting to MainTabView
 ```
@@ -56,6 +64,7 @@ AppPenia/
 - `var birthday: Date?` - Optional birthday
 - `var hasSede: Bool` - Whether the member has a sede (headquarters)
 - `var address: String` - Sede address (empty if no sede)
+- `var photoData: Data?` - Profile photo stored as JPEG data
 - `@Relationship(deleteRule: .cascade)` with Attendance
 - Computed properties: `attendanceCount`, `age`, `formattedBirthday`
 
@@ -109,20 +118,25 @@ iOS 26.0
 ### Gatherings Management (Juntadas)
 - List view with gatherings sorted by date (most recent first)
 - Create new gatherings with date picker, optional notes, and role assignments
+- **Edit gatherings** - Modify date, notes, and role assignments via modal sheet
 - Required role assignments: sede (host), cook, and dishwasher
 - Host selection limited to members with sede registered
 - View gathering details with full information (date, sede with address, cook, dishwasher, attendee list)
-- List rows display host information with house emoji
-- Add multiple attendees to a gathering via multi-select interface
+- List rows display host information with house emoji and avatar
+- **Profile photos displayed** for host, cook, dishwasher, and all attendees
+- Add multiple attendees to a gathering via multi-select interface (with avatars)
 - Delete attendees from gatherings (swipe to delete)
 - Delete entire gatherings (swipe to delete in list)
 
 ### Members Management (Miembros)
-- List view with members sorted alphabetically
-- Create new members with name validation
+- List view with members sorted alphabetically **with profile photo avatars**
+- Create new members with name validation and **optional photo capture**
+- **Camera integration** - Take photos during member creation with UIImagePickerController
+- **Edit member profiles** - Modify name, birthday, sede information via modal sheet
+- **Photo management** - Change or delete member photos from profile view
 - Optional birthday field with age calculation
 - Optional sede (headquarters) information with address
-- View member profile with full information (birthday, age, sede, address)
+- View member profile with **large profile photo**, full information (birthday, age, sede, address)
 - Statistics section showing: times hosted, times cooked, times washed
 - Attendance statistics showing total count
 - See complete attendance history per member (sorted by date)
@@ -159,11 +173,13 @@ The app uses a shared ModelContainer configured in `AppPeniaApp.swift`:
 The app implements a comprehensive glassmorphism design system with reusable components in `Components/GlassComponents.swift`:
 
 **Reusable Components:**
-- `GlassBackground` - Animated gradient background with decorative blur circles
+- `GlassBackground` - Animated gradient background with decorative blur circles and centered AppIcon watermark (400x400, 5% opacity)
 - `GlassCard` modifier (`.glassCard()`) - Applies glass effect to any view with tap animations
 - `GlassRow` - Pre-configured glass card wrapper for list items
 - `GlassButtonStyle` - Button style with glass effect and press animations
 - `glassListBackground()` modifier - Combines glass background with hidden scroll background
+- `ProfilePhotoView` - Circular avatar component with three sizes (small: 40px, medium: 80px, large: 150px)
+- `CameraView` - UIViewControllerRepresentable for camera photo capture with editing enabled
 
 **Design Characteristics:**
 - `.ultraThinMaterial` blur effect for intense glassmorphism
@@ -189,6 +205,30 @@ Button("Label") { action }
     .buttonStyle(GlassButtonStyle())
 ```
 
+## Photo Management
+
+The app includes comprehensive photo capture and display functionality:
+
+**Camera Permissions:**
+- `NSCameraUsageDescription` configured in Info.plist: "Necesitamos acceso a la cámara para tomar fotos de los miembros"
+
+**Photo Storage:**
+- Photos stored as `Data?` in User model using JPEG compression (0.8 quality)
+- Photos persist in SwiftData automatically with cascade deletion
+
+**Photo Capture Flow:**
+1. User taps "Tomar Foto" button in AddUserView or EditPhotoView
+2. CameraView presents UIImagePickerController with camera source
+3. Editing enabled for cropping/adjusting before capture
+4. Image converted to JPEG Data and stored in User.photoData
+
+**Photo Display:**
+- Small avatars (40px) in: UserRow, EventDetailView (attendees, roles), AddAttendeeView
+- Medium avatars (80px): Reserved for future use
+- Large photos (150px): UserProfileView, EditPhotoView
+- Fallback: `person.circle.fill` SF Symbol when no photo exists
+- All photos have glass-style borders and shadows
+
 ## Important Notes
 
 - All views that use SwiftData must import both `SwiftUI` and `SwiftData`
@@ -196,11 +236,13 @@ Button("Label") { action }
 - The app entry point is `MainTabView`, not the default `ContentView`
 - Date formatting is configured for Spanish locale (es_ES)
 - Glass components require iOS 15+ for `.ultraThinMaterial` support
+- Camera access requires physical device (not available in simulator)
+- Photos stored in SwiftData; no external photo library integration
 
 ## Project Configuration
 
 - Automatic code signing is enabled (`CODE_SIGN_STYLE = Automatic`)
 - SwiftUI Previews are enabled (`ENABLE_PREVIEWS = YES`)
 - Info.plist is auto-generated (`GENERATE_INFOPLIST_FILE = YES`)
+- Camera usage description configured (`INFOPLIST_KEY_NSCameraUsageDescription`)
 - String catalog symbol generation is enabled for localization
-- to memorize

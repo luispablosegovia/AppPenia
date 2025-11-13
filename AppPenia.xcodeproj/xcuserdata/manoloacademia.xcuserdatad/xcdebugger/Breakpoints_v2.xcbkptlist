@@ -8,7 +8,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "610E46CB-5E6F-4A1E-A57B-5722CB1E5A29"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AppPenia/Views/EventDetailView.swift"
@@ -16,38 +16,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "132"
             endingLineNumber = "132"
-            landmarkName = "deleteAttendance(offsets:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "610E46CB-5E6F-4A1E-A57B-5722CB1E5A29 - bd7f6f787b015b3c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "AppPenia.EventDetailView.body.getter : some"
-                  moduleName = "AppPenia.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/manoloacademia/Documents/Swift/AppPenia/AppPenia/Views/EventDetailView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "132"
-                  endingLineNumber = "132">
-               </Location>
-               <Location
-                  uuid = "610E46CB-5E6F-4A1E-A57B-5722CB1E5A29 - a8c54fee6000f96f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #3 () -&gt; AppPenia.AddAttendeeView in AppPenia.EventDetailView.body.getter : some"
-                  moduleName = "AppPenia.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/manoloacademia/Documents/Swift/AppPenia/AppPenia/Views/EventDetailView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "134"
-                  endingLineNumber = "134">
-               </Location>
-            </Locations>
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

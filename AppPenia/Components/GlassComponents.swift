@@ -38,17 +38,12 @@ struct GlassBackground: View {
                 .blur(radius: 80)
                 .offset(x: 150, y: 400)
 
-            // Marca de agua con AppIcon justo debajo del título
-            VStack {
-                Image("AppIcon_1024x1024")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 200, height: 200)
-                    .opacity(0.05)
-                    .padding(.top, 160)
-                Spacer()
-            }
-            .ignoresSafeArea()
+            // Marca de agua con AppIcon centrada
+            Image("AppIcon_1024x1024")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 400, height: 400)
+                .opacity(0.05)
         }
     }
 }

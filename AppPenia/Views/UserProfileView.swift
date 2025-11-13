@@ -12,6 +12,7 @@ struct UserProfileView: View {
     @Query private var allEvents: [Event]
     let user: User
     @State private var showingEditPhoto = false
+    @State private var showingEditUser = false
 
     private var sortedAttendances: [Attendance] {
         (user.attendances ?? [])
@@ -168,8 +169,21 @@ struct UserProfileView: View {
         .glassListBackground()
         .navigationTitle(user.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { showingEditUser = true }) {
+                    Image(systemName: "pencil")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                }
+                .buttonStyle(GlassButtonStyle())
+            }
+        }
         .sheet(isPresented: $showingEditPhoto) {
             EditPhotoView(user: user, isPresented: $showingEditPhoto)
+        }
+        .sheet(isPresented: $showingEditUser) {
+            EditUserView(user: user, isPresented: $showingEditUser)
         }
     }
 }

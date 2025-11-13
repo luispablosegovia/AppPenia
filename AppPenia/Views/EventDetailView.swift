@@ -15,6 +15,7 @@ struct EventDetailView: View {
     let event: Event
 
     @State private var showingAddAttendee = false
+    @State private var showingEditEvent = false
 
     private var attendees: [User] {
         event.attendances?.compactMap { $0.user } ?? []
@@ -119,6 +120,14 @@ struct EventDetailView: View {
         .navigationTitle("Detalle de la Juntada")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { showingEditEvent = true }) {
+                    Image(systemName: "pencil")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                }
+                .buttonStyle(GlassButtonStyle())
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { showingAddAttendee = true }) {
                     Image(systemName: "person.badge.plus")
@@ -135,6 +144,9 @@ struct EventDetailView: View {
                 availableUsers: availableUsers,
                 isPresented: $showingAddAttendee
             )
+        }
+        .sheet(isPresented: $showingEditEvent) {
+            EditEventView(event: event, isPresented: $showingEditEvent)
         }
     }
 
