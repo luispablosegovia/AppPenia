@@ -31,7 +31,7 @@ struct UserProfileView: View {
 
     var body: some View {
         List {
-            Section("Información") {
+            Section {
                 HStack {
                     Text("Nombre")
                     Spacer()
@@ -88,8 +88,10 @@ struct UserProfileView: View {
                         .bold()
                 }
             }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
-            Section("Estadísticas") {
+            Section {
                 HStack {
                     Text("Veces que prestó sede")
                     Spacer()
@@ -114,8 +116,10 @@ struct UserProfileView: View {
                         .bold()
                 }
             }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
-            Section("Historial de Asistencias") {
+            Section {
                 if sortedAttendances.isEmpty {
                     Text("No hay asistencias registradas")
                         .foregroundColor(.secondary)
@@ -140,7 +144,10 @@ struct UserProfileView: View {
                     }
                 }
             }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
+        .glassListBackground()
         .navigationTitle(user.name)
         .navigationBarTitleDisplayMode(.inline)
     }

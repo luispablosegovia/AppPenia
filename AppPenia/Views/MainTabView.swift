@@ -9,6 +9,16 @@ import SwiftUI
 import SwiftData
 
 struct MainTabView: View {
+    init() {
+        // Configurar apariencia del TabBar con efecto glass
+        let appearance = UITabBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.8)
+
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+    }
+
     var body: some View {
         TabView {
             EventsListView()

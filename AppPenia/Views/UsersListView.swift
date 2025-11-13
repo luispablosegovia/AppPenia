@@ -20,15 +20,20 @@ struct UsersListView: View {
                     NavigationLink(destination: UserProfileView(user: user)) {
                         UserRow(user: user)
                     }
+                    .buttonStyle(.plain)
                 }
                 .onDelete(perform: deleteUsers)
             }
+            .glassListBackground()
             .navigationTitle("Miembros")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingAddUser = true }) {
                         Image(systemName: "plus")
+                            .font(.title3)
+                            .fontWeight(.semibold)
                     }
+                    .buttonStyle(GlassButtonStyle())
                 }
             }
             .sheet(isPresented: $showingAddUser) {
@@ -36,11 +41,18 @@ struct UsersListView: View {
             }
             .overlay {
                 if users.isEmpty {
-                    ContentUnavailableView(
-                        "No hay miembros",
-                        systemImage: "person.2.fill",
-                        description: Text("Toca + para crear el primer miembro")
-                    )
+                    VStack(spacing: 16) {
+                        Image(systemName: "person.2.fill")
+                            .font(.system(size: 60))
+                            .foregroundStyle(.secondary)
+                        Text("No hay miembros")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        Text("Toca + para crear el primer miembro")
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(40)
+                    .glassCard()
                 }
             }
         }
@@ -80,12 +92,15 @@ struct AddUserView: View {
     @FocusState private var isNameFocused: Bool
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Nombre del Miembro") {
-                    TextField("Nombre", text: $name)
-                        .focused($isNameFocused)
-                }
+        ZStack {
+            GlassBackground()
+
+            NavigationStack {
+                Form {
+                    Section("Nombre del Miembro") {
+                        TextField("Nombre", text: $name)
+                            .focused($isNameFocused)
+                    }
 
                 Section("Fecha de Cumpleaños (Opcional)") {
                     Toggle("Agregar cumpleaños", isOn: $hasBirthday)
@@ -103,24 +118,30 @@ struct AddUserView: View {
                             .lineLimit(2...4)
                     }
                 }
-            }
-            .navigationTitle("Nuevo Miembro")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancelar") {
-                        isPresented = false
+                }
+                .glassForm()
+                .scrollContentBackground(.hidden)
+                .navigationTitle("Nuevo Miembro")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: { isPresented = false }) {
+                            Image(systemName: "chevron.left")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Guardar") {
+                            saveUser()
+                        }
+                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .buttonStyle(GlassButtonStyle())
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Guardar") {
-                        saveUser()
-                    }
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                .onAppear {
+                    isNameFocused = true
                 }
-            }
-            .onAppear {
-                isNameFocused = true
             }
         }
     }

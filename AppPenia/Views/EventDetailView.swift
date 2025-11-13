@@ -28,7 +28,7 @@ struct EventDetailView: View {
 
     var body: some View {
         List {
-            Section("Información de la Juntada") {
+            Section {
                 HStack {
                     Text("Fecha")
                     Spacer()
@@ -85,8 +85,10 @@ struct EventDetailView: View {
                         .bold()
                 }
             }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
-            Section("Asistentes") {
+            Section {
                 if attendees.isEmpty {
                     Text("No hay asistentes registrados")
                         .foregroundColor(.secondary)
@@ -100,15 +102,21 @@ struct EventDetailView: View {
                     .onDelete(perform: deleteAttendance)
                 }
             }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
+        .glassListBackground()
         .navigationTitle("Detalle de la Juntada")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { showingAddAttendee = true }) {
                     Image(systemName: "person.badge.plus")
+                        .font(.title3)
+                        .fontWeight(.semibold)
                 }
                 .disabled(availableUsers.isEmpty)
+                .buttonStyle(GlassButtonStyle())
             }
         }
         .sheet(isPresented: $showingAddAttendee) {

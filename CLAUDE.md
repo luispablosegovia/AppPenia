@@ -68,6 +68,7 @@ AppPenia/
 - **SwiftUI**: Declarative UI framework
 - **SwiftData**: Modern persistence framework (replacing Core Data)
 - **MVVM Pattern**: Models, Views with `@Query` for reactive data
+- **Liquid Glass Design System**: Modern glassmorphism UI with blur effects, transparency, and animations
 - **Main actor isolation**: Enabled by default (`SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor`)
 - **Swift approachable concurrency**: `SWIFT_APPROACHABLE_CONCURRENCY = YES`
 - **SwiftUI Previews**: Development (`#Preview` macro)
@@ -133,11 +134,16 @@ iOS 26.0
 - Bidirectional navigation: tap on a member in gathering detail to see their profile, tap on a gathering in member profile to see gathering details
 
 ### UI Features
-- Tab-based navigation (Juntadas / Miembros)
-- Modal sheets for creating new records
+- Tab-based navigation (Juntadas / Miembros) with glass effect TabBar
+- Liquid glass design with glassmorphism effects throughout the app
+- Glass cards for list items with tap animations (scale + brightness)
+- Glass backgrounds with animated gradients (blue/purple/pink)
+- Glass buttons with material blur and gradient borders
+- Modal sheets for creating new records with glass styling
 - NavigationStack for hierarchical navigation
-- ContentUnavailableView for empty states
+- Custom empty states with glass cards
 - Locale-aware date formatting (Spanish - es_ES)
+- Smooth animations with spring physics
 
 ## SwiftData Configuration
 
@@ -148,12 +154,48 @@ The app uses a shared ModelContainer configured in `AppPeniaApp.swift`:
 - Views access data via `@Query` property wrapper
 - Mutations via `@Environment(\.modelContext)`
 
+## Liquid Glass Design System
+
+The app implements a comprehensive glassmorphism design system with reusable components in `Components/GlassComponents.swift`:
+
+**Reusable Components:**
+- `GlassBackground` - Animated gradient background with decorative blur circles
+- `GlassCard` modifier (`.glassCard()`) - Applies glass effect to any view with tap animations
+- `GlassRow` - Pre-configured glass card wrapper for list items
+- `GlassButtonStyle` - Button style with glass effect and press animations
+- `glassListBackground()` modifier - Combines glass background with hidden scroll background
+
+**Design Characteristics:**
+- `.ultraThinMaterial` blur effect for intense glassmorphism
+- Gradient borders with white opacity (0.6 to 0.2)
+- Shadow effects for depth (black 15% opacity, 10px radius)
+- Spring animations (0.3s response, 0.6 damping fraction)
+- Scale (0.97x) and brightness (-5%) on press
+- Adaptive system colors for light/dark mode compatibility
+
+**Usage Pattern:**
+```swift
+// Apply to entire List view
+List { ... }
+    .glassListBackground()
+
+// Wrap list items
+GlassRow {
+    YourContentView()
+}
+
+// Style buttons
+Button("Label") { action }
+    .buttonStyle(GlassButtonStyle())
+```
+
 ## Important Notes
 
 - All views that use SwiftData must import both `SwiftUI` and `SwiftData`
 - Preview providers need `.modelContainer(for: [Event.self, User.self, Attendance.self])` modifier
 - The app entry point is `MainTabView`, not the default `ContentView`
 - Date formatting is configured for Spanish locale (es_ES)
+- Glass components require iOS 15+ for `.ultraThinMaterial` support
 
 ## Project Configuration
 

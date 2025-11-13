@@ -22,15 +22,20 @@ struct EventsListView: View {
                     NavigationLink(destination: EventDetailView(event: event)) {
                         EventRow(event: event)
                     }
+                    .buttonStyle(.plain)
                 }
                 .onDelete(perform: deleteEvents)
             }
+            .glassListBackground()
             .navigationTitle("Peña de los Miércoles")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingAddEvent = true }) {
                         Image(systemName: "plus")
+                            .font(.title3)
+                            .fontWeight(.semibold)
                     }
+                    .buttonStyle(GlassButtonStyle())
                 }
             }
             .sheet(isPresented: $showingAddEvent) {
@@ -38,11 +43,18 @@ struct EventsListView: View {
             }
             .overlay {
                 if events.isEmpty {
-                    ContentUnavailableView(
-                        "No hay juntadas",
-                        systemImage: "calendar.badge.plus",
-                        description: Text("Toca + para crear la primera juntada")
-                    )
+                    VStack(spacing: 16) {
+                        Image(systemName: "calendar.badge.plus")
+                            .font(.system(size: 60))
+                            .foregroundStyle(.secondary)
+                        Text("No hay juntadas")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                        Text("Toca + para crear la primera juntada")
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(40)
+                    .glassCard()
                 }
             }
         }
@@ -100,11 +112,14 @@ struct AddEventView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Fecha de la Juntada") {
-                    DatePicker("Fecha", selection: $selectedDate, displayedComponents: .date)
-                }
+        ZStack {
+            GlassBackground()
+
+            NavigationStack {
+                Form {
+                    Section("Fecha de la Juntada") {
+                        DatePicker("Fecha", selection: $selectedDate, displayedComponents: .date)
+                    }
 
                 Section("Sede") {
                     if usersWithSede.isEmpty {
@@ -155,20 +170,26 @@ struct AddEventView: View {
                     TextField("Notas", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
-            }
-            .navigationTitle("Nueva Juntada")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancelar") {
-                        isPresented = false
-                    }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Guardar") {
-                        saveEvent()
+                .glassForm()
+                .scrollContentBackground(.hidden)
+                .navigationTitle("Nueva Juntada")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button(action: { isPresented = false }) {
+                            Image(systemName: "chevron.left")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                        }
                     }
-                    .disabled(!canSave)
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Guardar") {
+                            saveEvent()
+                        }
+                        .disabled(!canSave)
+                        .buttonStyle(GlassButtonStyle())
+                    }
                 }
             }
         }
