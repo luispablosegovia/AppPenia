@@ -14,6 +14,8 @@ struct EventsListView: View {
     @State private var showingAddEvent = false
     @State private var newEventDate = Date()
     @State private var newEventNotes = ""
+    @State private var showingDeleteAlert = false
+    @State private var eventToDelete: Event?
 
     var body: some View {
         NavigationStack {
@@ -23,8 +25,15 @@ struct EventsListView: View {
                         EventRow(event: event)
                     }
                     .buttonStyle(.plain)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            eventToDelete = event
+                            showingDeleteAlert = true
+                        } label: {
+                            Label("Eliminar", systemImage: "trash")
+                        }
+                    }
                 }
-                .onDelete(perform: deleteEvents)
             }
             .glassListBackground()
             .navigationTitle("Peña de los Miércoles")
@@ -37,6 +46,16 @@ struct EventsListView: View {
                     }
                     .buttonStyle(GlassButtonStyle())
                 }
+            }
+            .alert("Eliminar Juntada", isPresented: $showingDeleteAlert, presenting: eventToDelete) { event in
+                Button("Cancelar", role: .cancel) {
+                    eventToDelete = nil
+                }
+                Button("Eliminar", role: .destructive) {
+                    deleteEvent(event)
+                }
+            } message: { event in
+                Text("¿Estás seguro de que quieres eliminar la juntada del \(event.formattedDate)? Esta acción no se puede deshacer.")
             }
             .sheet(isPresented: $showingAddEvent) {
                 AddEventView(isPresented: $showingAddEvent)
@@ -60,10 +79,9 @@ struct EventsListView: View {
         }
     }
 
-    private func deleteEvents(offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(events[index])
-        }
+    private func deleteEvent(_ event: Event) {
+        modelContext.delete(event)
+        eventToDelete = nil
     }
 }
 

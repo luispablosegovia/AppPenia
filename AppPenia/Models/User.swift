@@ -16,17 +16,19 @@ final class User {
     var birthday: Date?
     var hasSede: Bool
     var address: String
+    var photoData: Data?
 
     @Relationship(deleteRule: .cascade, inverse: \Attendance.user)
     var attendances: [Attendance]?
 
-    init(name: String, birthday: Date? = nil, hasSede: Bool = false, address: String = "") {
+    init(name: String, birthday: Date? = nil, hasSede: Bool = false, address: String = "", photoData: Data? = nil) {
         self.id = UUID()
         self.name = name
         self.createdAt = Date()
         self.birthday = birthday
         self.hasSede = hasSede
         self.address = address
+        self.photoData = photoData
         self.attendances = []
     }
 

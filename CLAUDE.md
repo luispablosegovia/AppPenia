@@ -203,3 +203,4 @@ Button("Label") { action }
 - SwiftUI Previews are enabled (`ENABLE_PREVIEWS = YES`)
 - Info.plist is auto-generated (`GENERATE_INFOPLIST_FILE = YES`)
 - String catalog symbol generation is enabled for localization
+- to memorize

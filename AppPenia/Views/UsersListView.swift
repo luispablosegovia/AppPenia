@@ -7,11 +7,14 @@
 
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct UsersListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \User.name) private var users: [User]
     @State private var showingAddUser = false
+    @State private var showingDeleteAlert = false
+    @State private var userToDelete: User?
 
     var body: some View {
         NavigationStack {
@@ -21,8 +24,15 @@ struct UsersListView: View {
                         UserRow(user: user)
                     }
                     .buttonStyle(.plain)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            userToDelete = user
+                            showingDeleteAlert = true
+                        } label: {
+                            Label("Eliminar", systemImage: "trash")
+                        }
+                    }
                 }
-                .onDelete(perform: deleteUsers)
             }
             .glassListBackground()
             .navigationTitle("Miembros")
@@ -35,6 +45,16 @@ struct UsersListView: View {
                     }
                     .buttonStyle(GlassButtonStyle())
                 }
+            }
+            .alert("Eliminar Miembro", isPresented: $showingDeleteAlert, presenting: userToDelete) { user in
+                Button("Cancelar", role: .cancel) {
+                    userToDelete = nil
+                }
+                Button("Eliminar", role: .destructive) {
+                    deleteUser(user)
+                }
+            } message: { user in
+                Text("¿Estás seguro de que quieres eliminar a \(user.name)? Esta acción eliminará también su historial de asistencias y no se puede deshacer.")
             }
             .sheet(isPresented: $showingAddUser) {
                 AddUserView(isPresented: $showingAddUser)
@@ -58,10 +78,9 @@ struct UsersListView: View {
         }
     }
 
-    private func deleteUsers(offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(users[index])
-        }
+    private func deleteUser(_ user: User) {
+        modelContext.delete(user)
+        userToDelete = nil
     }
 }
 
@@ -89,6 +108,8 @@ struct AddUserView: View {
     @State private var selectedBirthday = Date()
     @State private var hasSede = false
     @State private var address = ""
+    @State private var capturedImage: UIImage?
+    @State private var showingCamera = false
     @FocusState private var isNameFocused: Bool
 
     var body: some View {
@@ -97,6 +118,36 @@ struct AddUserView: View {
 
             NavigationStack {
                 Form {
+                    Section("Foto (Opcional)") {
+                        VStack(spacing: 12) {
+                            if let image = capturedImage {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 120, height: 120)
+                                    .clipShape(Circle())
+                                    .overlay(Circle().stroke(Color.white.opacity(0.3), lineWidth: 2))
+                            } else {
+                                Circle()
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(width: 120, height: 120)
+                                    .overlay(
+                                        Image(systemName: "camera.fill")
+                                            .font(.system(size: 40))
+                                            .foregroundColor(.secondary)
+                                    )
+                            }
+
+                            Button(action: { showingCamera = true }) {
+                                Label(capturedImage == nil ? "Tomar Foto" : "Cambiar Foto", systemImage: "camera")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                    }
+
                     Section("Nombre del Miembro") {
                         TextField("Nombre", text: $name)
                             .focused($isNameFocused)
@@ -142,6 +193,9 @@ struct AddUserView: View {
                 .onAppear {
                     isNameFocused = true
                 }
+                .sheet(isPresented: $showingCamera) {
+                    CameraView(image: $capturedImage)
+                }
             }
         }
     }
@@ -152,10 +206,53 @@ struct AddUserView: View {
 
         let finalBirthday = hasBirthday ? selectedBirthday : nil
         let finalAddress = hasSede ? address : ""
+        let photoData = capturedImage?.jpegData(compressionQuality: 0.8)
 
-        let newUser = User(name: trimmedName, birthday: finalBirthday, hasSede: hasSede, address: finalAddress)
+        let newUser = User(name: trimmedName, birthday: finalBirthday, hasSede: hasSede, address: finalAddress, photoData: photoData)
         modelContext.insert(newUser)
         isPresented = false
+    }
+}
+
+// MARK: - Camera View
+
+struct CameraView: UIViewControllerRepresentable {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var image: UIImage?
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        picker.sourceType = .camera
+        picker.allowsEditing = true
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: CameraView
+
+        init(_ parent: CameraView) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let editedImage = info[.editedImage] as? UIImage {
+                parent.image = editedImage
+            } else if let originalImage = info[.originalImage] as? UIImage {
+                parent.image = originalImage
+            }
+            parent.dismiss()
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.dismiss()
+        }
     }
 }
 

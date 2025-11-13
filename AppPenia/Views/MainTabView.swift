@@ -30,6 +30,11 @@ struct MainTabView: View {
                 .tabItem {
                     Label("Miembros", systemImage: "person.2")
                 }
+
+            StatisticsView()
+                .tabItem {
+                    Label("Estadísticas", systemImage: "chart.bar")
+                }
         }
     }
 }
