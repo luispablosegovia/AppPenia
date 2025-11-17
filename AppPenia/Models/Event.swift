@@ -20,6 +20,9 @@ final class Event {
     @Relationship(deleteRule: .cascade, inverse: \Attendance.event)
     var attendances: [Attendance]?
 
+    @Relationship(deleteRule: .cascade, inverse: \Expense.event)
+    var expense: Expense?
+
     init(date: Date, notes: String = "", host: User? = nil, cook: User? = nil, dishwasher: User? = nil) {
         self.id = UUID()
         self.date = date
@@ -28,6 +31,7 @@ final class Event {
         self.cook = cook
         self.dishwasher = dishwasher
         self.attendances = []
+        self.expense = nil
     }
 
     var attendeeCount: Int {
@@ -45,5 +49,9 @@ final class Event {
     var hostAddress: String? {
         guard let host = host, host.hasSede else { return nil }
         return host.address.isEmpty ? nil : host.address
+    }
+
+    var hasExpense: Bool {
+        expense != nil
     }
 }

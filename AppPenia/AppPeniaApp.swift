@@ -14,7 +14,9 @@ struct AppPeniaApp: App {
         let schema = Schema([
             Event.self,
             User.self,
-            Attendance.self
+            Attendance.self,
+            Expense.self,
+            Payment.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

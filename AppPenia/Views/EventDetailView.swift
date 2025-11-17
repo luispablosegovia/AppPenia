@@ -16,6 +16,7 @@ struct EventDetailView: View {
 
     @State private var showingAddAttendee = false
     @State private var showingEditEvent = false
+    @State private var showingAddExpense = false
 
     private var attendees: [User] {
         event.attendances?.compactMap { $0.user } ?? []
@@ -96,6 +97,69 @@ struct EventDetailView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
+            // Expense Section
+            Section {
+                if let expense = event.expense {
+                    // Show expense summary
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text("Gasto Total")
+                                .font(.subheadline)
+                            Spacer()
+                            Text(formatCurrency(expense.totalAmount))
+                                .font(.title3)
+                                .bold()
+                        }
+
+                        HStack {
+                            Text("Por Persona")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text(formatCurrency(expense.amountPerPerson))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        NavigationLink(destination: ExpenseDetailView(event: event)) {
+                            HStack {
+                                Image(systemName: "chart.bar.doc.horizontal")
+                                    .foregroundColor(.accentColor)
+                                Text("Ver Detalles del Gasto")
+                                    .foregroundColor(.accentColor)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                        }
+                    }
+                } else {
+                    // Show add expense button
+                    Button(action: { showingAddExpense = true }) {
+                        HStack {
+                            Image(systemName: "dollarsign.circle")
+                                .foregroundColor(.green)
+                            Text("Agregar Gasto")
+                                .foregroundColor(.green)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                    }
+                    .disabled(attendees.isEmpty)
+                    .opacity(attendees.isEmpty ? 0.5 : 1.0)
+
+                    if attendees.isEmpty {
+                        Text("Agrega asistentes primero para registrar gastos")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .italic()
+                    }
+                }
+            } header: {
+                Text("Gastos")
+            }
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+
             Section {
                 if attendees.isEmpty {
                     Text("No hay asistentes registrados")
@@ -148,6 +212,9 @@ struct EventDetailView: View {
         .sheet(isPresented: $showingEditEvent) {
             EditEventView(event: event, isPresented: $showingEditEvent)
         }
+        .sheet(isPresented: $showingAddExpense) {
+            AddExpenseView(event: event)
+        }
     }
 
     private func deleteAttendance(offsets: IndexSet) {
@@ -159,6 +226,13 @@ struct EventDetailView: View {
                 modelContext.delete(attendanceToDelete)
             }
         }
+    }
+
+    private func formatCurrency(_ amount: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "es_CL")
+        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }
 

@@ -61,18 +61,11 @@ struct UsersListView: View {
             }
             .overlay {
                 if users.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "person.2.fill")
-                            .font(.system(size: 60))
-                            .foregroundStyle(.secondary)
-                        Text("No hay miembros")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        Text("Toca + para crear el primer miembro")
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(40)
-                    .glassCard()
+                    ContentUnavailableView(
+                        "Sin Miembros",
+                        systemImage: "person.2",
+                        description: Text("Los miembros aparecerán aquí")
+                    )
                 }
             }
         }

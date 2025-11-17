@@ -31,6 +31,41 @@ struct UserProfileView: View {
         allEvents.filter { $0.dishwasher?.id == user.id }.count
     }
 
+    // Financial balance calculations
+    private var eventsWithExpenses: [Event] {
+        allEvents.filter { event in
+            guard let _ = event.expense,
+                  let attendances = event.attendances else { return false }
+            return attendances.contains(where: { $0.user?.id == user.id })
+        }
+    }
+
+    private var totalPaid: Decimal {
+        eventsWithExpenses.compactMap { event in
+            event.expense?.amountPaidBy(user: user)
+        }.reduce(Decimal(0), +)
+    }
+
+    private var totalOwed: Decimal {
+        eventsWithExpenses.compactMap { event in
+            guard let expense = event.expense else { return nil }
+            let balance = expense.balanceFor(user: user)
+            return balance < 0 ? -balance : 0
+        }.reduce(Decimal(0), +)
+    }
+
+    private var totalOwedToUser: Decimal {
+        eventsWithExpenses.compactMap { event in
+            guard let expense = event.expense else { return nil }
+            let balance = expense.balanceFor(user: user)
+            return balance > 0 ? balance : 0
+        }.reduce(Decimal(0), +)
+    }
+
+    private var netBalance: Decimal {
+        totalOwedToUser - totalOwed
+    }
+
     var body: some View {
         List {
             Section {
@@ -138,6 +173,83 @@ struct UserProfileView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
+            // Financial Balance Section
+            if !eventsWithExpenses.isEmpty {
+                Section {
+                    VStack(alignment: .leading, spacing: 12) {
+                        // Total paid
+                        HStack {
+                            Text("Total Aportado")
+                                .font(.subheadline)
+                            Spacer()
+                            Text(formatCurrency(totalPaid))
+                                .font(.title3)
+                                .bold()
+                                .foregroundColor(.green)
+                        }
+
+                        Divider()
+
+                        // What they owe
+                        HStack {
+                            Text("Debe")
+                                .font(.subheadline)
+                            Spacer()
+                            Text(formatCurrency(totalOwed))
+                                .font(.callout)
+                                .foregroundColor(.red)
+                        }
+
+                        // What is owed to them
+                        HStack {
+                            Text("Le deben")
+                                .font(.subheadline)
+                            Spacer()
+                            Text(formatCurrency(totalOwedToUser))
+                                .font(.callout)
+                                .foregroundColor(.green)
+                        }
+
+                        Divider()
+
+                        // Net balance
+                        HStack {
+                            Text("Balance Neto")
+                                .font(.headline)
+                            Spacer()
+                            Text(formatCurrency(netBalance))
+                                .font(.title2)
+                                .bold()
+                                .foregroundColor(netBalance >= 0 ? .green : .red)
+                        }
+
+                        if netBalance < 0 {
+                            Text("Debe pagar \(formatCurrency(-netBalance))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .italic()
+                        } else if netBalance > 0 {
+                            Text("Le deben \(formatCurrency(netBalance))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .italic()
+                        } else {
+                            Text("Está al día")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .italic()
+                        }
+                    }
+                    .padding(.vertical, 8)
+                } header: {
+                    Text("Balance Financiero")
+                } footer: {
+                    Text("Basado en \(eventsWithExpenses.count) juntadas con gastos registrados")
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            }
+
             Section {
                 if sortedAttendances.isEmpty {
                     Text("No hay asistencias registradas")
@@ -185,6 +297,13 @@ struct UserProfileView: View {
         .sheet(isPresented: $showingEditUser) {
             EditUserView(user: user, isPresented: $showingEditUser)
         }
+    }
+
+    private func formatCurrency(_ amount: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "es_CL")
+        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }
 

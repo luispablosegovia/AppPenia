@@ -31,6 +31,11 @@ struct MainTabView: View {
                     Label("Miembros", systemImage: "person.2")
                 }
 
+            ExpensesTabView()
+                .tabItem {
+                    Label("Gastos", systemImage: "dollarsign.circle")
+                }
+
             StatisticsView()
                 .tabItem {
                     Label("Estadísticas", systemImage: "chart.bar")

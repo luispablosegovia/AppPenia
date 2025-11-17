@@ -19,8 +19,15 @@ struct StatisticsView: View {
             ZStack {
                 GlassBackground()
 
-                ScrollView {
-                    VStack(spacing: 40) {
+                if users.isEmpty && events.isEmpty {
+                    ContentUnavailableView(
+                        "Sin Datos",
+                        systemImage: "chart.bar",
+                        description: Text("Las estadísticas aparecerán aquí cuando haya datos")
+                    )
+                } else {
+                    ScrollView {
+                        VStack(spacing: 40) {
                         // Attendance Statistics
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Asistencias por Miembro")
@@ -35,9 +42,6 @@ struct StatisticsView: View {
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
-                            } else {
-                                EmptyChartPlaceholder(message: "No hay datos de asistencias")
-                                    .padding(.horizontal)
                             }
                         }
 
@@ -55,9 +59,6 @@ struct StatisticsView: View {
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
-                            } else {
-                                EmptyChartPlaceholder(message: "No hay datos de sedes")
-                                    .padding(.horizontal)
                             }
                         }
 
@@ -75,9 +76,6 @@ struct StatisticsView: View {
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
-                            } else {
-                                EmptyChartPlaceholder(message: "No hay datos de cocina")
-                                    .padding(.horizontal)
                             }
                         }
 
@@ -95,13 +93,11 @@ struct StatisticsView: View {
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
-                            } else {
-                                EmptyChartPlaceholder(message: "No hay datos de lavado")
-                                    .padding(.horizontal)
                             }
                         }
+                        }
+                        .padding(.vertical, 20)
                     }
-                    .padding(.vertical, 20)
                 }
             }
             .navigationTitle("Estadísticas")
@@ -316,26 +312,6 @@ struct DishwasherBarChart: View {
                 }
             }
         }
-    }
-}
-
-// MARK: - Empty Chart Placeholder
-
-struct EmptyChartPlaceholder: View {
-    let message: String
-
-    var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "chart.bar.xaxis")
-                .font(.system(size: 50))
-                .foregroundStyle(.secondary)
-            Text(message)
-                .font(.body)
-                .foregroundStyle(.secondary)
-        }
-        .frame(height: 200)
-        .frame(maxWidth: .infinity)
-        .glassCard()
     }
 }
 

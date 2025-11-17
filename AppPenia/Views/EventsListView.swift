@@ -62,18 +62,11 @@ struct EventsListView: View {
             }
             .overlay {
                 if events.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "calendar.badge.plus")
-                            .font(.system(size: 60))
-                            .foregroundStyle(.secondary)
-                        Text("No hay juntadas")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                        Text("Toca + para crear la primera juntada")
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(40)
-                    .glassCard()
+                    ContentUnavailableView(
+                        "Sin Juntadas",
+                        systemImage: "calendar",
+                        description: Text("Las juntadas aparecerán aquí")
+                    )
                 }
             }
         }
