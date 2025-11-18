@@ -57,6 +57,11 @@ struct EditUserView: View {
                         if hasSede {
                             TextField("Dirección", text: $address, axis: .vertical)
                                 .lineLimit(2...4)
+
+                            if !address.isEmpty {
+                                SedeMapView(address: address, height: 180)
+                                    .padding(.top, 8)
+                            }
                         }
                     }
                 }

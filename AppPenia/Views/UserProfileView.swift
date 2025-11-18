@@ -126,11 +126,12 @@ struct UserProfileView: View {
                 }
 
                 if user.hasSede && !user.address.isEmpty {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Dirección")
                             .font(.subheadline)
                         Text(user.address)
                             .foregroundColor(.secondary)
+                            .font(.callout)
                     }
                 }
 
@@ -144,6 +145,18 @@ struct UserProfileView: View {
             }
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+
+            // Map Section for sede
+            if user.hasSede && !user.address.isEmpty {
+                Section {
+                    SedeMapView(address: user.address)
+                        .padding(.vertical, 8)
+                } header: {
+                    Text("Ubicación de la Sede")
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            }
 
             Section {
                 HStack {
