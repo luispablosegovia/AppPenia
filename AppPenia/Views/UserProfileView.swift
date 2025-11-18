@@ -77,7 +77,7 @@ struct UserProfileView: View {
                             .font(.subheadline)
                             .fontWeight(.medium)
                     }
-                    .buttonStyle(GlassButtonStyle())
+                    .buttonStyle(.glass)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
@@ -301,7 +301,7 @@ struct UserProfileView: View {
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
-                .buttonStyle(GlassButtonStyle())
+                .buttonStyle(.glass)
             }
         }
         .sheet(isPresented: $showingEditPhoto) {

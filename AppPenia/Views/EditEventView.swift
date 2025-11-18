@@ -100,7 +100,6 @@ struct EditEventView: View {
                             .lineLimit(3...6)
                     }
                 }
-                .glassForm()
                 .scrollContentBackground(.hidden)
                 .navigationTitle("Editar Juntada")
                 .navigationBarTitleDisplayMode(.inline)
@@ -117,7 +116,7 @@ struct EditEventView: View {
                             saveChanges()
                         }
                         .disabled(!canSave)
-                        .buttonStyle(GlassButtonStyle())
+                        .buttonStyle(.glass)
                     }
                 }
             }

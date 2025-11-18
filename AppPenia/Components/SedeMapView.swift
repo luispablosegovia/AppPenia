@@ -155,11 +155,12 @@ struct SedeMapView: View {
 }
 
 #Preview {
-    VStack {
-        SedeMapView(address: "Av. Providencia 1234, Santiago, Chile")
-            .padding()
+    NavigationStack {
+        VStack {
+            SedeMapView(address: "Av. Providencia 1234, Santiago, Chile")
+                .padding()
 
-        Spacer()
+            Spacer()
+        }
     }
-    .glassListBackground()
 }

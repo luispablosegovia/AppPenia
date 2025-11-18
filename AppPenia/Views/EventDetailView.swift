@@ -202,7 +202,7 @@ struct EventDetailView: View {
                         .font(.title3)
                         .fontWeight(.semibold)
                 }
-                .buttonStyle(GlassButtonStyle())
+                .buttonStyle(.glass)
             }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: { showingAddAttendee = true }) {
@@ -211,7 +211,7 @@ struct EventDetailView: View {
                         .fontWeight(.semibold)
                 }
                 .disabled(availableUsers.isEmpty)
-                .buttonStyle(GlassButtonStyle())
+                .buttonStyle(.glass)
             }
         }
         .sheet(isPresented: $showingAddAttendee) {

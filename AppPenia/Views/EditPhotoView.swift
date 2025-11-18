@@ -108,7 +108,7 @@ struct EditPhotoView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding()
                         }
-                        .buttonStyle(GlassButtonStyle())
+                        .buttonStyle(.glass)
 
                         if user.photoData != nil || capturedImage != nil {
                             Button(action: deletePhoto) {
@@ -116,7 +116,7 @@ struct EditPhotoView: View {
                                     .frame(maxWidth: .infinity)
                                     .padding()
                             }
-                            .buttonStyle(GlassButtonStyle())
+                            .buttonStyle(.glass)
                         }
 
                         Button(action: { isPresented = false }) {
@@ -124,7 +124,7 @@ struct EditPhotoView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding()
                         }
-                        .buttonStyle(GlassButtonStyle())
+                        .buttonStyle(.glass)
                     }
                     .padding(.horizontal, 24)
                     .padding(.bottom, 40)
@@ -137,7 +137,7 @@ struct EditPhotoView: View {
                             savePhoto()
                         }
                         .disabled(!hasChanges)
-                        .buttonStyle(GlassButtonStyle())
+                        .buttonStyle(.glass)
                     }
                 }
                 .sheet(isPresented: $showingCamera) {

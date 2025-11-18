@@ -3,16 +3,17 @@
 //  AppPenia
 //
 //  Created by Pablo Segovia on 13/11/2025.
+//  Migrated to iOS 26 Liquid Glass APIs
 //
 
 import SwiftUI
 
-// MARK: - Glass Background
+// MARK: - Liquid Glass Background (iOS 26)
 
 struct GlassBackground: View {
     var body: some View {
         ZStack {
-            // Gradiente animado de fondo
+            // Gradiente animado de fondo con colores del sistema
             LinearGradient(
                 colors: [
                     Color.blue.opacity(0.3),
@@ -48,73 +49,18 @@ struct GlassBackground: View {
     }
 }
 
-// MARK: - Glass Card Modifier
-
-struct GlassCardModifier: ViewModifier {
-    @State private var isPressed = false
-
-    func body(content: Content) -> some View {
-        content
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(
-                                LinearGradient(
-                                    colors: [
-                                        Color.white.opacity(0.6),
-                                        Color.white.opacity(0.2)
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: 1.5
-                            )
-                    )
-                    .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
-            )
-            .scaleEffect(isPressed ? 0.97 : 1.0)
-            .brightness(isPressed ? -0.05 : 0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { _ in isPressed = true }
-                    .onEnded { _ in isPressed = false }
-            )
-    }
-}
+// MARK: - Liquid Glass Card Modifier (iOS 26 Native)
 
 extension View {
+    /// Aplica el efecto liquid glass nativo de iOS 26 con interactividad
     func glassCard() -> some View {
-        modifier(GlassCardModifier())
+        self
+            .padding()
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
     }
 }
 
-// MARK: - Glass Section Background
-
-struct GlassSectionBackground: View {
-    var body: some View {
-        RoundedRectangle(cornerRadius: 12)
-            .fill(.ultraThinMaterial)
-            .overlay(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(0.5),
-                                Color.white.opacity(0.1)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1
-                    )
-            )
-    }
-}
-
-// MARK: - Glass Row
+// MARK: - Glass Row (iOS 26)
 
 struct GlassRow<Content: View>: View {
     let content: Content
@@ -125,25 +71,12 @@ struct GlassRow<Content: View>: View {
 
     var body: some View {
         content
-            .glassCard()
+            .padding()
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 16))
     }
 }
 
-// MARK: - Glass Button Style
-
-struct GlassButtonStyle: ButtonStyle {
-    @Environment(\.isEnabled) private var isEnabled
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
-            .brightness(configuration.isPressed ? -0.05 : 0)
-            .opacity(isEnabled ? 1.0 : 0.5)
-            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
-    }
-}
-
-// MARK: - Glass List Background
+// MARK: - Glass List Background (iOS 26)
 
 struct GlassListBackground: ViewModifier {
     func body(content: Content) -> some View {
@@ -162,122 +95,22 @@ extension View {
     }
 }
 
-// MARK: - Animated Glass Card
+// MARK: - Previews
 
-struct AnimatedGlassCard<Content: View>: View {
-    let content: Content
-    @State private var isVisible = false
+#Preview {
+    VStack(spacing: 20) {
+        Text("Liquid Glass Card")
+            .glassCard()
 
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some View {
-        content
-            .opacity(isVisible ? 1 : 0)
-            .offset(y: isVisible ? 0 : 20)
-            .onAppear {
-                withAnimation(.easeOut(duration: 0.5)) {
-                    isVisible = true
-                }
+        GlassRow {
+            HStack {
+                Image(systemName: "star.fill")
+                Text("Glass Row Example")
+                Spacer()
+                Image(systemName: "chevron.right")
             }
-    }
-}
-
-// MARK: - Glass Form Modifier
-
-struct GlassFormModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .buttonStyle(.plain)
-    }
-}
-
-extension View {
-    func glassForm() -> some View {
-        modifier(GlassFormModifier())
-    }
-}
-
-// MARK: - Glass Login Button
-
-struct GlassLoginButton<Content: View>: View {
-    let content: Content
-    let action: () -> Void
-    @State private var isPressed = false
-
-    init(action: @escaping () -> Void, @ViewBuilder content: () -> Content) {
-        self.action = action
-        self.content = content()
-    }
-
-    var body: some View {
-        Button(action: action) {
-            content
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(.ultraThinMaterial)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(
-                                    LinearGradient(
-                                        colors: [
-                                            Color.white.opacity(0.6),
-                                            Color.white.opacity(0.2)
-                                        ],
-                                        startPoint: .topLeading,
-                                        endPoint: .bottomTrailing
-                                    ),
-                                    lineWidth: 1.5
-                                )
-                        )
-                        .shadow(color: Color.black.opacity(0.2), radius: 15, x: 0, y: 8)
-                )
-                .scaleEffect(isPressed ? 0.95 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+            .foregroundStyle(.primary)
         }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in isPressed = true }
-                .onEnded { _ in isPressed = false }
-        )
     }
-}
-
-// MARK: - Glass Welcome Card
-
-struct GlassWelcomeCard<Content: View>: View {
-    let content: Content
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some View {
-        VStack(spacing: 20) {
-            content
-        }
-        .padding(32)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24)
-                        .stroke(
-                            LinearGradient(
-                                colors: [
-                                    Color.white.opacity(0.6),
-                                    Color.white.opacity(0.2)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 2
-                        )
-                )
-                .shadow(color: Color.black.opacity(0.2), radius: 20, x: 0, y: 10)
-        )
-    }
+    .glassListBackground()
 }

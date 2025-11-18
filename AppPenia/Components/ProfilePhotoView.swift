@@ -65,5 +65,4 @@ struct ProfilePhotoView: View {
         ProfilePhotoView(photoData: nil, size: .large)
     }
     .padding()
-    .background(GlassBackground())
 }

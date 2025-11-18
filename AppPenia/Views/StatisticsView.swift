@@ -38,7 +38,6 @@ struct StatisticsView: View {
                             if !users.isEmpty {
                                 AttendanceBarChart(users: users)
                                     .frame(height: 200)
-                                    .padding()
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
@@ -55,7 +54,6 @@ struct StatisticsView: View {
                             if !events.isEmpty {
                                 SedeBarChart(events: events)
                                     .frame(height: 200)
-                                    .padding()
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
@@ -72,7 +70,6 @@ struct StatisticsView: View {
                             if !events.isEmpty {
                                 CookBarChart(events: events)
                                     .frame(height: 200)
-                                    .padding()
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
@@ -89,7 +86,6 @@ struct StatisticsView: View {
                             if !events.isEmpty {
                                 DishwasherBarChart(events: events)
                                     .frame(height: 200)
-                                    .padding()
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)
@@ -106,7 +102,6 @@ struct StatisticsView: View {
                             if !events.isEmpty {
                                 ExpensesBarChart(events: events)
                                     .frame(height: 200)
-                                    .padding()
                                     .glassCard()
                                     .padding(.horizontal)
                                     .allowsHitTesting(false)

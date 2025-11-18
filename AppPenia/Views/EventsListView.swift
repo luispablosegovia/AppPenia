@@ -44,7 +44,7 @@ struct EventsListView: View {
                             .font(.title3)
                             .fontWeight(.semibold)
                     }
-                    .buttonStyle(GlassButtonStyle())
+                    .buttonStyle(.glass)
                 }
             }
             .alert("Eliminar Juntada", isPresented: $showingDeleteAlert, presenting: eventToDelete) { event in
@@ -182,7 +182,6 @@ struct AddEventView: View {
                         .lineLimit(3...6)
                 }
                 }
-                .glassForm()
                 .scrollContentBackground(.hidden)
                 .navigationTitle("Nueva Juntada")
                 .navigationBarTitleDisplayMode(.inline)
@@ -199,7 +198,7 @@ struct AddEventView: View {
                             saveEvent()
                         }
                         .disabled(!canSave)
-                        .buttonStyle(GlassButtonStyle())
+                        .buttonStyle(.glass)
                     }
                 }
             }

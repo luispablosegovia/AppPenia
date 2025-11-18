@@ -65,7 +65,6 @@ struct EditUserView: View {
                         }
                     }
                 }
-                .glassForm()
                 .scrollContentBackground(.hidden)
                 .navigationTitle("Editar Miembro")
                 .navigationBarTitleDisplayMode(.inline)
@@ -82,7 +81,7 @@ struct EditUserView: View {
                             saveChanges()
                         }
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                        .buttonStyle(GlassButtonStyle())
+                        .buttonStyle(.glass)
                     }
                 }
             }

@@ -43,7 +43,7 @@ struct UsersListView: View {
                             .font(.title3)
                             .fontWeight(.semibold)
                     }
-                    .buttonStyle(GlassButtonStyle())
+                    .buttonStyle(.glass)
                 }
             }
             .alert("Eliminar Miembro", isPresented: $showingDeleteAlert, presenting: userToDelete) { user in
@@ -172,7 +172,6 @@ struct AddUserView: View {
                     }
                 }
                 }
-                .glassForm()
                 .scrollContentBackground(.hidden)
                 .navigationTitle("Nuevo Miembro")
                 .navigationBarTitleDisplayMode(.inline)
@@ -189,7 +188,7 @@ struct AddUserView: View {
                             saveUser()
                         }
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                        .buttonStyle(GlassButtonStyle())
+                        .buttonStyle(.glass)
                     }
                 }
                 .onAppear {
