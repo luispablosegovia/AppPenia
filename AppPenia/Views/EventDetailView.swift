@@ -97,6 +97,18 @@ struct EventDetailView: View {
             .listRowBackground(Color.clear)
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
+            // Map Section for sede
+            if let host = event.host, host.hasSede, !host.address.isEmpty {
+                Section {
+                    SedeMapView(address: host.address)
+                        .padding(.vertical, 8)
+                } header: {
+                    Text("Ubicación de la Sede")
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            }
+
             // Expense Section
             Section {
                 if let expense = event.expense {
