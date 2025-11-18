@@ -95,6 +95,23 @@ struct StatisticsView: View {
                                     .allowsHitTesting(false)
                             }
                         }
+
+                        // Expenses Statistics
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Gastos Acumulados por Persona")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.horizontal)
+
+                            if !events.isEmpty {
+                                ExpensesBarChart(events: events)
+                                    .frame(height: 200)
+                                    .padding()
+                                    .glassCard()
+                                    .padding(.horizontal)
+                                    .allowsHitTesting(false)
+                            }
+                        }
                         }
                         .padding(.vertical, 20)
                     }
@@ -315,7 +332,99 @@ struct DishwasherBarChart: View {
     }
 }
 
+// MARK: - Expenses Bar Chart
+
+struct ExpensesBarChart: View {
+    let events: [Event]
+
+    private var expensesStats: [(name: String, total: Decimal)] {
+        // Get all events with expenses
+        let eventsWithExpenses = events.filter { $0.expense != nil }
+
+        // Create a dictionary to accumulate expenses per user
+        var userExpenses: [UUID: (name: String, total: Decimal)] = [:]
+
+        for event in eventsWithExpenses {
+            guard let expense = event.expense,
+                  let attendances = event.attendances else { continue }
+
+            // Get all users who attended this event
+            let attendees = attendances.compactMap { $0.user }
+
+            for user in attendees {
+                let amountPaid = expense.amountPaidBy(user: user)
+
+                if amountPaid > 0 {
+                    if let existing = userExpenses[user.id] {
+                        userExpenses[user.id] = (name: user.name, total: existing.total + amountPaid)
+                    } else {
+                        userExpenses[user.id] = (name: user.name, total: amountPaid)
+                    }
+                }
+            }
+        }
+
+        return userExpenses.values
+            .map { (name: $0.name, total: $0.total) }
+            .sorted { $0.total > $1.total }
+    }
+
+    var body: some View {
+        if expensesStats.isEmpty {
+            VStack {
+                Text("No hay gastos registrados")
+                    .foregroundStyle(.secondary)
+                    .italic()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            Chart {
+                ForEach(expensesStats, id: \.name) { stat in
+                    BarMark(
+                        x: .value("Monto", NSDecimalNumber(decimal: stat.total).doubleValue),
+                        y: .value("Persona", stat.name)
+                    )
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [Color.yellow, Color.orange],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .annotation(position: .trailing) {
+                        Text(formatCurrency(stat.total))
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .chartXAxis {
+                AxisMarks(position: .bottom)
+            }
+            .chartYAxis {
+                AxisMarks(position: .leading) { value in
+                    AxisValueLabel {
+                        if let name = value.as(String.self) {
+                            Text(name)
+                                .font(.caption)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func formatCurrency(_ amount: Decimal) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "es_AR")
+        formatter.maximumFractionDigits = 0
+        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
+    }
+}
+
 #Preview {
     StatisticsView()
-        .modelContainer(for: [Event.self, User.self, Attendance.self])
+        .modelContainer(for: [Event.self, User.self, Attendance.self, Expense.self, Payment.self])
 }

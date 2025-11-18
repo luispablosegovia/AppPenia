@@ -35,31 +35,31 @@ struct ExpenseDetailView: View {
                     Section {
                         HStack {
                             Text("Gasto Total")
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                             Spacer()
                             Text(formatCurrency(expense.totalAmount))
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                                 .bold()
                         }
 
                         HStack {
                             Text("Por Persona")
-                                .foregroundStyle(.white.opacity(0.7))
+                                .foregroundStyle(.secondary)
                             Spacer()
                             Text(formatCurrency(expense.amountPerPerson))
-                                .foregroundStyle(.white.opacity(0.7))
+                                .foregroundStyle(.secondary)
                         }
 
                         HStack {
                             Text("Asistentes")
-                                .foregroundStyle(.white.opacity(0.7))
+                                .foregroundStyle(.secondary)
                             Spacer()
                             Text("\(event.attendeeCount)")
-                                .foregroundStyle(.white.opacity(0.7))
+                                .foregroundStyle(.secondary)
                         }
                     } header: {
                         Text("Resumen")
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(.secondary)
                     }
                     .listRowBackground(Color.white.opacity(0.1))
 
@@ -71,7 +71,7 @@ struct ExpenseDetailView: View {
                                     HStack {
                                         ProfilePhotoView(photoData: user.photoData, size: .small)
                                         Text(user.name)
-                                            .foregroundStyle(.white)
+                                            .foregroundStyle(.primary)
                                         Spacer()
                                         Text(formatCurrency(payment.amount))
                                             .foregroundStyle(.green)
@@ -81,12 +81,12 @@ struct ExpenseDetailView: View {
                             }
                         } else {
                             Text("No hay pagos registrados")
-                                .foregroundStyle(.white.opacity(0.5))
+                                .foregroundStyle(.secondary)
                                 .italic()
                         }
                     } header: {
                         Text("Quién puso dinero")
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(.secondary)
                     }
                     .listRowBackground(Color.white.opacity(0.1))
 
@@ -108,11 +108,11 @@ struct ExpenseDetailView: View {
                         }
                     } header: {
                         Text("Quién paga a quién")
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(.secondary)
                     } footer: {
                         if !debts.isEmpty {
                             Text("Transferencias optimizadas para minimizar pagos")
-                                .foregroundStyle(.white.opacity(0.5))
+                                .foregroundStyle(.secondary)
                         }
                     }
                     .listRowBackground(Color.white.opacity(0.1))
@@ -175,7 +175,7 @@ struct ExpenseDetailView: View {
     private func formatCurrency(_ amount: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_CL")
+        formatter.locale = Locale(identifier: "es_AR")
         return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }
@@ -191,19 +191,19 @@ struct DebtRow: View {
             HStack(spacing: 8) {
                 ProfilePhotoView(photoData: debt.from.photoData, size: .small)
                 Text(debt.from.name)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
             }
 
             // Arrow
             Image(systemName: "arrow.right")
-                .foregroundStyle(.white.opacity(0.5))
+                .foregroundStyle(.secondary)
                 .font(.caption)
 
             // Creditor
             HStack(spacing: 8) {
                 ProfilePhotoView(photoData: debt.to.photoData, size: .small)
                 Text(debt.to.name)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
             }
 
             Spacer()
@@ -218,7 +218,7 @@ struct DebtRow: View {
     private func formatCurrency(_ amount: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_CL")
+        formatter.locale = Locale(identifier: "es_AR")
         return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }

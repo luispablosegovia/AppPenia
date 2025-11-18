@@ -122,7 +122,7 @@ struct ExpenseEventRow: View {
     private func formatCurrency(_ amount: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_CL")
+        formatter.locale = Locale(identifier: "es_AR")
         return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }

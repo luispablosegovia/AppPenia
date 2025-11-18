@@ -65,27 +65,27 @@ struct AddExpenseView: View {
                     Section {
                         HStack {
                             Text("Gasto Total")
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                             Spacer()
                             TextField("0", text: $totalAmountText)
                                 .keyboardType(.decimalPad)
                                 .multilineTextAlignment(.trailing)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(.primary)
                                 .frame(maxWidth: 150)
                         }
 
                         if let total = totalAmount, total > 0 {
                             HStack {
                                 Text("Por persona")
-                                    .foregroundStyle(.white.opacity(0.7))
+                                    .foregroundStyle(.secondary)
                                 Spacer()
                                 Text(formatCurrency(total / Decimal(attendees.count)))
-                                    .foregroundStyle(.white.opacity(0.7))
+                                    .foregroundStyle(.secondary)
                             }
                         }
                     } header: {
                         Text("Monto")
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(.secondary)
                     }
                     .listRowBackground(Color.white.opacity(0.1))
 
@@ -93,7 +93,7 @@ struct AddExpenseView: View {
                     Section {
                         if attendees.isEmpty {
                             Text("No hay asistentes registrados")
-                                .foregroundStyle(.white.opacity(0.5))
+                                .foregroundStyle(.secondary)
                                 .italic()
                         } else {
                             ForEach(attendees, id: \.id) { user in
@@ -117,12 +117,12 @@ struct AddExpenseView: View {
                         }
                     } header: {
                         Text("¿Quién puso dinero?")
-                            .foregroundStyle(.white.opacity(0.7))
+                            .foregroundStyle(.secondary)
                     } footer: {
                         if let total = totalAmount, total > 0 {
                             HStack {
                                 Text("Total pagado:")
-                                    .foregroundStyle(.white.opacity(0.7))
+                                    .foregroundStyle(.secondary)
                                 Spacer()
                                 Text(formatCurrency(totalPaid))
                                     .foregroundStyle(totalPaid == total ? .green : .red)
@@ -141,14 +141,14 @@ struct AddExpenseView: View {
                     Button("Cancelar") {
                         dismiss()
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Guardar") {
                         saveExpense()
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .disabled(!isValid)
                 }
             }
@@ -202,7 +202,7 @@ struct AddExpenseView: View {
     private func formatCurrency(_ amount: Decimal) -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_CL")
+        formatter.locale = Locale(identifier: "es_AR")
         return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }
@@ -221,13 +221,13 @@ struct PayerRow: View {
             Button(action: onToggle) {
                 HStack(spacing: 12) {
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                        .foregroundStyle(isSelected ? .green : .white.opacity(0.3))
+                        .foregroundStyle(isSelected ? .green : .secondary)
                         .font(.title3)
 
                     ProfilePhotoView(photoData: user.photoData, size: .small)
 
                     Text(user.name)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                 }
             }
             .buttonStyle(.plain)
@@ -239,7 +239,7 @@ struct PayerRow: View {
                 TextField("Monto", text: $amountText)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
                     .frame(maxWidth: 100)
             }
         }
