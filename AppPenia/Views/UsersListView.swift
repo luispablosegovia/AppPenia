@@ -23,7 +23,7 @@ struct UsersListView: View {
                     NavigationLink(destination: UserProfileView(user: user)) {
                         UserRow(user: user)
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
                     .buttonStyle(.plain)
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {

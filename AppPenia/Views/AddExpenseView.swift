@@ -87,7 +87,7 @@ struct AddExpenseView: View {
                         Text("Monto")
                             .foregroundStyle(.secondary)
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
 
                     // Payers Section
                     Section {
@@ -130,7 +130,7 @@ struct AddExpenseView: View {
                             }
                         }
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
                 }
                 .scrollContentBackground(.hidden)
             }

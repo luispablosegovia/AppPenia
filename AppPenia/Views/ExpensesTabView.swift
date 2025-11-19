@@ -34,7 +34,7 @@ struct ExpensesTabView: View {
                                 NavigationLink(destination: ExpenseDetailView(event: event)) {
                                     ExpenseEventRow(event: event, expense: expense)
                                 }
-                                .listRowBackground(Color(.secondarySystemBackground))
+                                .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
                             }
                         }
                     }

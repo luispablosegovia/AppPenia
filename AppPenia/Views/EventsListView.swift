@@ -24,7 +24,7 @@ struct EventsListView: View {
                     NavigationLink(destination: EventDetailView(event: event)) {
                         EventRow(event: event)
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
                     .buttonStyle(.plain)
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {

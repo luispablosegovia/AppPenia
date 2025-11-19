@@ -61,7 +61,7 @@ struct ExpenseDetailView: View {
                         Text("Resumen")
                             .foregroundStyle(.secondary)
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
 
                     // Who Paid Section
                     Section {
@@ -88,7 +88,7 @@ struct ExpenseDetailView: View {
                         Text("Quién puso dinero")
                             .foregroundStyle(.secondary)
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
 
                     // Debts Section - Who owes whom
                     Section {
@@ -115,7 +115,7 @@ struct ExpenseDetailView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
                 }
                 .scrollContentBackground(.hidden)
             } else {

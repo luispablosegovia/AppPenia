@@ -108,7 +108,7 @@ struct EventDetailView: View {
                         .bold()
                 }
             }
-            .listRowBackground(Color(.secondarySystemBackground))
+            .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             // Map Section for sede
@@ -117,7 +117,7 @@ struct EventDetailView: View {
                     SedeMapView(address: host.address)
                         .padding(.vertical, 8)
                 }
-                .listRowBackground(Color(.secondarySystemBackground))
+                .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
             }
 
@@ -179,7 +179,7 @@ struct EventDetailView: View {
                     }
                 }
             }
-            .listRowBackground(Color(.secondarySystemBackground))
+            .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             Section {
@@ -199,7 +199,7 @@ struct EventDetailView: View {
                     .onDelete(perform: deleteAttendance)
                 }
             }
-            .listRowBackground(Color(.secondarySystemBackground))
+            .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
         .glassListBackground()
@@ -287,7 +287,7 @@ struct AddAttendeeView: View {
                         }
                     }
                 }
-                .listRowBackground(Color(.secondarySystemBackground))
+                .listRowBackground(Color(.secondarySystemBackground).opacity(0.3))
             }
             .navigationTitle("Agregar Asistentes")
             .navigationBarTitleDisplayMode(.inline)
