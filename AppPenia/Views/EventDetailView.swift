@@ -30,6 +30,20 @@ struct EventDetailView: View {
 
     var body: some View {
         List {
+            // Photo Section
+            if let photoData = event.photoData, let uiImage = UIImage(data: photoData) {
+                Section {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 250)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+            }
+
             Section {
                 HStack {
                     Text("Fecha")
@@ -94,23 +108,21 @@ struct EventDetailView: View {
                         .bold()
                 }
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color(.secondarySystemBackground))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             // Map Section for sede
             if let host = event.host, host.hasSede, !host.address.isEmpty {
-                Section {
+                Section(header: Text("Ubicación de la Sede")) {
                     SedeMapView(address: host.address)
                         .padding(.vertical, 8)
-                } header: {
-                    Text("Ubicación de la Sede")
                 }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                .listRowBackground(Color(.secondarySystemBackground))
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
             }
 
             // Expense Section
-            Section {
+            Section(header: Text("Gastos")) {
                 if let expense = event.expense {
                     // Show expense summary
                     VStack(alignment: .leading, spacing: 12) {
@@ -166,10 +178,8 @@ struct EventDetailView: View {
                             .italic()
                     }
                 }
-            } header: {
-                Text("Gastos")
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color(.secondarySystemBackground))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             Section {
@@ -189,7 +199,7 @@ struct EventDetailView: View {
                     .onDelete(perform: deleteAttendance)
                 }
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color(.secondarySystemBackground))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
         .glassListBackground()
@@ -277,6 +287,7 @@ struct AddAttendeeView: View {
                         }
                     }
                 }
+                .listRowBackground(Color(.secondarySystemBackground))
             }
             .navigationTitle("Agregar Asistentes")
             .navigationBarTitleDisplayMode(.inline)

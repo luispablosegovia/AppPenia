@@ -82,7 +82,7 @@ struct UserProfileView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color(.secondarySystemBackground))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             Section {
@@ -143,7 +143,7 @@ struct UserProfileView: View {
                         .bold()
                 }
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color(.secondarySystemBackground))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             // Map Section for sede
@@ -154,8 +154,8 @@ struct UserProfileView: View {
                 } header: {
                     Text("Ubicación de la Sede")
                 }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color(.secondarySystemBackground))
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
             }
 
             Section {
@@ -183,7 +183,7 @@ struct UserProfileView: View {
                         .bold()
                 }
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color(.secondarySystemBackground))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             // Financial Balance Section
@@ -259,8 +259,8 @@ struct UserProfileView: View {
                 } footer: {
                     Text("Basado en \(eventsWithExpenses.count) juntadas con gastos registrados")
                 }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                    .listRowBackground(Color(.secondarySystemBackground))
+            .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
             }
 
             Section {
@@ -288,7 +288,7 @@ struct UserProfileView: View {
                     }
                 }
             }
-            .listRowBackground(Color.clear)
+            .listRowBackground(Color(.secondarySystemBackground))
             .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
         }
         .glassListBackground()

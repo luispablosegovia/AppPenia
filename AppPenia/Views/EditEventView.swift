@@ -19,6 +19,9 @@ struct EditEventView: View {
     @State private var selectedHostId: UUID?
     @State private var selectedCookId: UUID?
     @State private var selectedDishwasherId: UUID?
+    @State private var photoData: Data?
+    @State private var showingCamera = false
+    @State private var capturedImage: UIImage?
 
     private var usersWithSede: [User] {
         allUsers.filter { $0.hasSede }
@@ -38,6 +41,7 @@ struct EditEventView: View {
         _selectedHostId = State(initialValue: event.host?.id)
         _selectedCookId = State(initialValue: event.cook?.id)
         _selectedDishwasherId = State(initialValue: event.dishwasher?.id)
+        _photoData = State(initialValue: event.photoData)
     }
 
     var body: some View {
@@ -99,6 +103,42 @@ struct EditEventView: View {
                         TextField("Notas", text: $notes, axis: .vertical)
                             .lineLimit(3...6)
                     }
+
+                    Section("Foto (Opcional)") {
+                        if let photoData = photoData, let uiImage = UIImage(data: photoData) {
+                            VStack(spacing: 12) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 200)
+                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                                HStack(spacing: 12) {
+                                    Button(action: { showingCamera = true }) {
+                                        HStack {
+                                            Image(systemName: "camera")
+                                            Text("Cambiar Foto")
+                                        }
+                                    }
+
+                                    Button(action: { self.photoData = nil }) {
+                                        HStack {
+                                            Image(systemName: "trash")
+                                            Text("Eliminar Foto")
+                                        }
+                                        .foregroundColor(.red)
+                                    }
+                                }
+                            }
+                        } else {
+                            Button(action: { showingCamera = true }) {
+                                HStack {
+                                    Image(systemName: "camera")
+                                    Text("Tomar Foto")
+                                }
+                            }
+                        }
+                    }
                 }
                 .scrollContentBackground(.hidden)
                 .navigationTitle("Editar Juntada")
@@ -120,6 +160,14 @@ struct EditEventView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showingCamera) {
+                CameraView(image: $capturedImage)
+            }
+            .onChange(of: capturedImage) { oldValue, newValue in
+                if let image = newValue {
+                    photoData = image.jpegData(compressionQuality: 0.8)
+                }
+            }
         }
     }
 
@@ -137,6 +185,7 @@ struct EditEventView: View {
         event.host = host
         event.cook = cook
         event.dishwasher = dishwasher
+        event.photoData = photoData
 
         isPresented = false
     }

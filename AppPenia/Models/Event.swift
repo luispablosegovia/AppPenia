@@ -16,6 +16,7 @@ final class Event {
     var host: User?
     var cook: User?
     var dishwasher: User?
+    var photoData: Data?
 
     @Relationship(deleteRule: .cascade, inverse: \Attendance.event)
     var attendances: [Attendance]?
@@ -23,13 +24,14 @@ final class Event {
     @Relationship(deleteRule: .cascade, inverse: \Expense.event)
     var expense: Expense?
 
-    init(date: Date, notes: String = "", host: User? = nil, cook: User? = nil, dishwasher: User? = nil) {
+    init(date: Date, notes: String = "", host: User? = nil, cook: User? = nil, dishwasher: User? = nil, photoData: Data? = nil) {
         self.id = UUID()
         self.date = date
         self.notes = notes
         self.host = host
         self.cook = cook
         self.dishwasher = dishwasher
+        self.photoData = photoData
         self.attendances = []
         self.expense = nil
     }

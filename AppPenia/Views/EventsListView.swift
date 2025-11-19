@@ -24,6 +24,7 @@ struct EventsListView: View {
                     NavigationLink(destination: EventDetailView(event: event)) {
                         EventRow(event: event)
                     }
+                    .listRowBackground(Color(.secondarySystemBackground))
                     .buttonStyle(.plain)
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button(role: .destructive) {
@@ -82,22 +83,40 @@ struct EventRow: View {
     let event: Event
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(event.formattedDate)
-                .font(.headline)
-            Text("\(event.attendeeCount) asistentes")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            if let host = event.host {
-                Text("🏠 Sede: \(host.name)")
-                    .font(.caption)
+        HStack(spacing: 12) {
+            // Thumbnail photo
+            if let photoData = event.photoData, let uiImage = UIImage(data: photoData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 60, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            } else {
+                Image(systemName: "photo")
+                    .font(.title)
                     .foregroundColor(.secondary)
+                    .frame(width: 60, height: 60)
+                    .background(Color(.systemGray5))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
             }
-            if !event.notes.isEmpty {
-                Text(event.notes)
-                    .font(.caption)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(event.formattedDate)
+                    .font(.headline)
+                Text("\(event.attendeeCount) asistentes")
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
-                    .lineLimit(1)
+                if let host = event.host {
+                    Text("🏠 Sede: \(host.name)")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                if !event.notes.isEmpty {
+                    Text(event.notes)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                }
             }
         }
         .padding(.vertical, 4)
@@ -113,6 +132,9 @@ struct AddEventView: View {
     @State private var selectedHostId: UUID?
     @State private var selectedCookId: UUID?
     @State private var selectedDishwasherId: UUID?
+    @State private var photoData: Data?
+    @State private var showingCamera = false
+    @State private var capturedImage: UIImage?
 
     private var usersWithSede: [User] {
         allUsers.filter { $0.hasSede }
@@ -181,6 +203,33 @@ struct AddEventView: View {
                     TextField("Notas", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
+
+                Section("Foto (Opcional)") {
+                    if let photoData = photoData, let uiImage = UIImage(data: photoData) {
+                        VStack(spacing: 12) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: 200)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+
+                            Button(action: { self.photoData = nil }) {
+                                HStack {
+                                    Image(systemName: "trash")
+                                    Text("Eliminar Foto")
+                                }
+                                .foregroundColor(.red)
+                            }
+                        }
+                    } else {
+                        Button(action: { showingCamera = true }) {
+                            HStack {
+                                Image(systemName: "camera")
+                                Text("Tomar Foto")
+                            }
+                        }
+                    }
+                }
                 }
                 .scrollContentBackground(.hidden)
                 .navigationTitle("Nueva Juntada")
@@ -202,6 +251,14 @@ struct AddEventView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showingCamera) {
+                CameraView(image: $capturedImage)
+            }
+            .onChange(of: capturedImage) { oldValue, newValue in
+                if let image = newValue {
+                    photoData = image.jpegData(compressionQuality: 0.8)
+                }
+            }
         }
     }
 
@@ -214,7 +271,7 @@ struct AddEventView: View {
               let cook = allUsers.first(where: { $0.id == cookId }),
               let dishwasher = allUsers.first(where: { $0.id == dishwasherId }) else { return }
 
-        let newEvent = Event(date: selectedDate, notes: notes, host: host, cook: cook, dishwasher: dishwasher)
+        let newEvent = Event(date: selectedDate, notes: notes, host: host, cook: cook, dishwasher: dishwasher, photoData: photoData)
         modelContext.insert(newEvent)
         isPresented = false
     }
