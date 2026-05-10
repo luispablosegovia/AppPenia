@@ -79,7 +79,7 @@ struct AddExpenseView: View {
                                 Text("Por persona")
                                     .foregroundStyle(.secondary)
                                 Spacer()
-                                Text(formatCurrency(total / Decimal(attendees.count)))
+                                Text((total / Decimal(attendees.count)).arsFormatted)
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -124,7 +124,7 @@ struct AddExpenseView: View {
                                 Text("Total pagado:")
                                     .foregroundStyle(.secondary)
                                 Spacer()
-                                Text(formatCurrency(totalPaid))
+                                Text(totalPaid.arsFormatted)
                                     .foregroundStyle(totalPaid == total ? .green : .red)
                                     .bold()
                             }
@@ -199,12 +199,6 @@ struct AddExpenseView: View {
         showError = true
     }
 
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_AR")
-        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
-    }
 }
 
 // MARK: - Payer Row

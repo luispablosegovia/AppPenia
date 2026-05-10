@@ -9,38 +9,25 @@ import SwiftUI
 import SwiftData
 
 struct MainTabView: View {
-    init() {
-        // Configurar apariencia del TabBar con efecto glass
-        let appearance = UITabBarAppearance()
-        appearance.configureWithTransparentBackground()
-        appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.8)
-
-        UITabBar.appearance().standardAppearance = appearance
-        UITabBar.appearance().scrollEdgeAppearance = appearance
-    }
-
     var body: some View {
         TabView {
-            EventsListView()
-                .tabItem {
-                    Label("Juntadas", systemImage: "calendar")
-                }
+            Tab("Juntadas", systemImage: "calendar") {
+                EventsListView()
+            }
 
-            UsersListView()
-                .tabItem {
-                    Label("Miembros", systemImage: "person.2")
-                }
+            Tab("Miembros", systemImage: "person.2") {
+                UsersListView()
+            }
 
-            ExpensesTabView()
-                .tabItem {
-                    Label("Gastos", systemImage: "dollarsign.circle")
-                }
+            Tab("Gastos", systemImage: "dollarsign.circle") {
+                ExpensesTabView()
+            }
 
-            StatisticsView()
-                .tabItem {
-                    Label("Estadísticas", systemImage: "chart.bar")
-                }
+            Tab("Estadísticas", systemImage: "chart.bar") {
+                StatisticsView()
+            }
         }
+        .tabViewStyle(.sidebarAdaptable)
     }
 }
 

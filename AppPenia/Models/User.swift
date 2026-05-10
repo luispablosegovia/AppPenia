@@ -44,10 +44,11 @@ final class User {
     }
 
     var formattedBirthday: String? {
-        guard let birthday = birthday else { return nil }
-        let formatter = DateFormatter()
-        formatter.dateFormat = "d 'de' MMMM"
-        formatter.locale = Locale(identifier: "es_ES")
-        return formatter.string(from: birthday)
+        birthday?.formatted(
+            Date.FormatStyle()
+                .day(.defaultDigits)
+                .month(.wide)
+                .locale(Locale(identifier: "es_ES"))
+        )
     }
 }

@@ -387,7 +387,7 @@ struct ExpensesBarChart: View {
                         )
                     )
                     .annotation(position: .trailing) {
-                        Text(formatCurrency(stat.total))
+                        Text(stat.total.arsFormattedNoDecimals)
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundStyle(.secondary)
@@ -408,14 +408,6 @@ struct ExpensesBarChart: View {
                 }
             }
         }
-    }
-
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_AR")
-        formatter.maximumFractionDigits = 0
-        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }
 

@@ -100,13 +100,14 @@ struct SedeMapView: View {
         .task {
             await geocodeAddress()
         }
-        .onChange(of: address) { _, _ in
+        .onChange(of: address) {
             Task {
                 await geocodeAddress()
             }
         }
     }
 
+    @MainActor
     private func geocodeAddress() async {
         guard !address.isEmpty else {
             geocodingError = "No hay dirección para mostrar"
@@ -117,7 +118,6 @@ struct SedeMapView: View {
         geocodingError = nil
 
         do {
-            // Use MapKit's modern geocoding API
             let searchRequest = MKLocalSearch.Request()
             searchRequest.naturalLanguageQuery = address
 
@@ -131,25 +131,19 @@ struct SedeMapView: View {
             }
 
             let coordinate = firstItem.location.coordinate
-
-            // Update state on main actor
-            await MainActor.run {
-                self.markerCoordinate = coordinate
-                self.position = .camera(
-                    MapCamera(
-                        centerCoordinate: coordinate,
-                        distance: 500, // 500 meters zoom
-                        heading: 0,
-                        pitch: 0
-                    )
+            markerCoordinate = coordinate
+            position = .camera(
+                MapCamera(
+                    centerCoordinate: coordinate,
+                    distance: 500,
+                    heading: 0,
+                    pitch: 0
                 )
-                self.isGeocoding = false
-            }
+            )
+            isGeocoding = false
         } catch {
-            await MainActor.run {
-                geocodingError = "No se pudo encontrar la dirección en el mapa"
-                isGeocoding = false
-            }
+            geocodingError = "No se pudo encontrar la dirección en el mapa"
+            isGeocoding = false
         }
     }
 }

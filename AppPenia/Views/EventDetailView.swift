@@ -10,7 +10,7 @@ import SwiftData
 
 struct EventDetailView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var allUsers: [User]
+    @Query(sort: \User.name) private var allUsers: [User]
 
     let event: Event
 
@@ -130,7 +130,7 @@ struct EventDetailView: View {
                             Text("Gasto Total")
                                 .font(.subheadline)
                             Spacer()
-                            Text(formatCurrency(expense.totalAmount))
+                            Text(expense.totalAmount.arsFormatted)
                                 .font(.title3)
                                 .bold()
                         }
@@ -140,7 +140,7 @@ struct EventDetailView: View {
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                             Spacer()
-                            Text(formatCurrency(expense.amountPerPerson))
+                            Text(expense.amountPerPerson.arsFormatted)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -250,12 +250,6 @@ struct EventDetailView: View {
         }
     }
 
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_AR")
-        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
-    }
 }
 
 struct AddAttendeeView: View {
