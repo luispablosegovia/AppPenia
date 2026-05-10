@@ -195,7 +195,7 @@ struct UserProfileView: View {
                             Text("Total Aportado")
                                 .font(.subheadline)
                             Spacer()
-                            Text(formatCurrency(totalPaid))
+                            Text(totalPaid.arsFormatted)
                                 .font(.title3)
                                 .bold()
                                 .foregroundColor(.green)
@@ -208,7 +208,7 @@ struct UserProfileView: View {
                             Text("Debe")
                                 .font(.subheadline)
                             Spacer()
-                            Text(formatCurrency(totalOwed))
+                            Text(totalOwed.arsFormatted)
                                 .font(.callout)
                                 .foregroundColor(.red)
                         }
@@ -218,7 +218,7 @@ struct UserProfileView: View {
                             Text("Le deben")
                                 .font(.subheadline)
                             Spacer()
-                            Text(formatCurrency(totalOwedToUser))
+                            Text(totalOwedToUser.arsFormatted)
                                 .font(.callout)
                                 .foregroundColor(.green)
                         }
@@ -230,19 +230,19 @@ struct UserProfileView: View {
                             Text("Balance Neto")
                                 .font(.headline)
                             Spacer()
-                            Text(formatCurrency(netBalance))
+                            Text(netBalance.arsFormatted)
                                 .font(.title2)
                                 .bold()
                                 .foregroundColor(netBalance >= 0 ? .green : .red)
                         }
 
                         if netBalance < 0 {
-                            Text("Debe pagar \(formatCurrency(-netBalance))")
+                            Text("Debe pagar \((-netBalance).arsFormatted)")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .italic()
                         } else if netBalance > 0 {
-                            Text("Le deben \(formatCurrency(netBalance))")
+                            Text("Le deben \(netBalance.arsFormatted)")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                                 .italic()
@@ -312,12 +312,6 @@ struct UserProfileView: View {
         }
     }
 
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_AR")
-        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
-    }
 }
 
 #Preview {

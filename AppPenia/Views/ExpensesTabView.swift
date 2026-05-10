@@ -10,11 +10,9 @@ import SwiftData
 
 struct ExpensesTabView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Event.date, order: .reverse) private var allEvents: [Event]
-
-    private var eventsWithExpenses: [Event] {
-        allEvents.filter { $0.expense != nil }
-    }
+    @Query(filter: #Predicate<Event> { $0.expense != nil },
+           sort: \Event.date, order: .reverse)
+    private var eventsWithExpenses: [Event]
 
     var body: some View {
         NavigationStack {
@@ -64,7 +62,7 @@ struct ExpenseEventRow: View {
                     Text("Total")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text(formatCurrency(expense.totalAmount))
+                    Text(expense.totalAmount.arsFormatted)
                         .font(.title3)
                         .bold()
                 }
@@ -75,7 +73,7 @@ struct ExpenseEventRow: View {
                     Text("Por Persona")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text(formatCurrency(expense.amountPerPerson))
+                    Text(expense.amountPerPerson.arsFormatted)
                         .font(.callout)
                         .foregroundColor(.secondary)
                 }
@@ -120,12 +118,6 @@ struct ExpenseEventRow: View {
         .padding(.vertical, 4)
     }
 
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_AR")
-        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
-    }
 }
 
 // MARK: - Preview

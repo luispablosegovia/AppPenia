@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 /// Represents a debt from one user to another
-struct Debt: Identifiable {
+struct Debt: Identifiable, Sendable {
     let id = UUID()
     let from: User
     let to: User

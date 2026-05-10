@@ -41,11 +41,10 @@ final class Event {
     }
 
     var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        formatter.locale = Locale(identifier: "es_ES")
-        return formatter.string(from: date)
+        date.formatted(
+            Date.FormatStyle(date: .abbreviated, time: .omitted)
+                .locale(Locale(identifier: "es_ES"))
+        )
     }
 
     var hostAddress: String? {

@@ -37,7 +37,7 @@ struct ExpenseDetailView: View {
                             Text("Gasto Total")
                                 .foregroundStyle(.primary)
                             Spacer()
-                            Text(formatCurrency(expense.totalAmount))
+                            Text(expense.totalAmount.arsFormatted)
                                 .foregroundStyle(.primary)
                                 .bold()
                         }
@@ -46,7 +46,7 @@ struct ExpenseDetailView: View {
                             Text("Por Persona")
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            Text(formatCurrency(expense.amountPerPerson))
+                            Text(expense.amountPerPerson.arsFormatted)
                                 .foregroundStyle(.secondary)
                         }
 
@@ -73,7 +73,7 @@ struct ExpenseDetailView: View {
                                         Text(user.name)
                                             .foregroundStyle(.primary)
                                         Spacer()
-                                        Text(formatCurrency(payment.amount))
+                                        Text(payment.amount.arsFormatted)
                                             .foregroundStyle(.green)
                                             .bold()
                                     }
@@ -172,12 +172,6 @@ struct ExpenseDetailView: View {
         }
     }
 
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_AR")
-        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
-    }
 }
 
 // MARK: - Debt Row
@@ -209,17 +203,10 @@ struct DebtRow: View {
             Spacer()
 
             // Amount
-            Text(formatCurrency(debt.amount))
+            Text(debt.amount.arsFormatted)
                 .foregroundStyle(.cyan)
                 .bold()
         }
-    }
-
-    private func formatCurrency(_ amount: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "es_AR")
-        return formatter.string(from: amount as NSDecimalNumber) ?? "$0"
     }
 }
 
