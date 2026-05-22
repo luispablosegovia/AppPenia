@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 final class Payment {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var amount: Decimal
     var createdAt: Date
 

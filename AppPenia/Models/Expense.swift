@@ -18,7 +18,7 @@ struct Debt: Identifiable, Sendable {
 
 @Model
 final class Expense {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var totalAmount: Decimal
     var createdAt: Date
 

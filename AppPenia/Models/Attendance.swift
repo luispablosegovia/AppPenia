@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 final class Attendance {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var createdAt: Date
 
     var user: User?

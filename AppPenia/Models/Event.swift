@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 final class Event {
-    @Attribute(.unique) var id: UUID
+    var id: UUID
     var date: Date
     var notes: String
     var host: User?
