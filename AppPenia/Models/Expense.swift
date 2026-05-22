@@ -60,7 +60,7 @@ final class Expense {
 
     /// Calculates optimized debts between users to minimize number of transactions
     /// Uses a greedy algorithm to match creditors with debtors
-    func calculateDebts() -> [Debt] {
+    @MainActor func calculateDebts() -> [Debt] {
         guard let event = event,
               let attendances = event.attendances,
               !attendances.isEmpty,

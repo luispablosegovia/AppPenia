@@ -254,8 +254,8 @@ struct AddEventView: View {
             .sheet(isPresented: $showingCamera) {
                 CameraView(image: $capturedImage)
             }
-            .onChange(of: capturedImage) { image in
-                if let image {
+            .onChange(of: capturedImage) {
+                if let image = capturedImage {
                     photoData = image.jpegData(compressionQuality: 0.8)
                 }
             }
